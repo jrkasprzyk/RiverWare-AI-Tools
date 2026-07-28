@@ -1,0 +1,86 @@
+---
+name: visualize-riverware-model
+description: Render a RiverWare model (.mdl) as a self-contained interactive HTML dashboard — object-network schematic, elevation-volume curves, rule-curve tables, and key result time series. Use when asked to visualize, chart, dashboard, diagram, or plot a RiverWare model or its results.
+---
+
+# Visualize a RiverWare model
+
+This skill turns a `.mdl` file into a single self-contained HTML dashboard:
+a draggable object-network schematic, the model summary (run horizon, timestep,
+object counts), elevation-volume curves, rule-curve and release tables, and
+time-series plots of key result slots. No network access, no build step — the
+output renders from `file://` or any static host.
+
+**Do not read the raw `.mdl`** — it is a 1.6–1.9 MB Tcl script. The generator
+script does all extraction.
+
+Paths below are relative to the root of this repository.
+
+## Step 1 — generate the dashboard
+
+`skills/visualize-riverware-model/digest_to_json.py` (Python 3.10+, stdlib
+only; it imports the parser from the explain skill).
+
+```bash
+# from the repo root
+python skills/visualize-riverware-model/digest_to_json.py examples/ArborBasin/ArborBasin.mdl --html
+```
+
+This writes `<modelname>_dashboard.html` next to the model (`-o path` to
+choose the destination). Drop `--html` to get the raw JSON digest on stdout
+instead, which is useful when you want to inspect what the dashboard will show:
+
+- `objects` — every simulation object with type and description
+- `links` — object-to-object topology from the model's link definitions,
+  oriented upstream → downstream and classified as water conveyance (`flow`)
+  or data/head exchange (`data`)
+- `tables` — full numeric data for the whitelisted lookup tables
+  (Elevation Volume Table, Max Release, Guide Curve, Elevation Guide Curve)
+- `series` — values for the curated result slots defined by
+  `KEY_SERIES_SLOTS = ["Pool Elevation", "Outflow", "Storage"]`
+
+If a model stores no run results, the `series` list is empty and the dashboard
+simply omits the time-series section — that is expected, not an error.
+
+## Step 2 — review before delivering
+
+Open the generated file in a browser and check:
+
+1. The header counts match the model (`Simulation objects` in the explain
+   skill's digest is the cross-check).
+2. The network schematic is readable. The automatic layered layout is a
+   starting point; nodes are draggable, but if the layout is badly tangled for
+   a large model, say so rather than presenting it as final.
+3. Elevation-volume curves are monotonically increasing; a jagged curve
+   usually means a table row failed to parse — investigate before delivering.
+4. Time-series plots look like results (seasonal patterns, sensible ranges),
+   not initialization placeholders.
+
+Unless instructed otherwise, save the dashboard next to the model file as
+`<modelname>_dashboard.html`.
+
+## Customizing
+
+- To surface additional series slots, edit `KEY_SERIES_SLOTS` in
+  `digest_to_json.py` (exact slot-name match).
+- To plot more lookup tables, extend `TABLE_WHITELIST` in the same file.
+- Visual styling lives entirely in `template.html` (inline CSS/JS). Keep it
+  free of external requests — the self-contained property is the point.
+
+## Worked example
+
+`examples/ArborBasin/ArborBasin_dashboard.html` is a committed dashboard
+produced this way from `examples/ArborBasin/ArborBasin.mdl`. Open it from the
+repository (or the project's GitHub Pages site) to see the target result.
+
+## Gotchas
+
+- **Link direction is inferred.** RiverWare links are undirected; the
+  generator orients an edge by which end is an `Inflow` slot. Head/data links
+  (e.g. tailwater-to-pool-elevation couplings) are drawn dashed.
+- **Aggregate element names contain colons** (`Mulberry Irrigation:District 1`).
+  They are ordinary nodes; only `.` separates object from slot.
+- **Series values may be sparse.** NaN entries become gaps; the chart skips
+  them rather than plotting zeros.
+- **Big models make big files.** Every curated series value is embedded in the
+  HTML. If the output grows past a few megabytes, trim `KEY_SERIES_SLOTS`.
