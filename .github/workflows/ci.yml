@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Parser tests
+        run: python -m unittest discover -s tests -v
+      - name: MCP pure-function tests
+        run: python -m unittest discover -s prototypes/riverware-mcp/tests -v
+
+  scrub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Private-reference scrub gate (SEC-001)
+        run: |
+          if grep -rniE "joka0958|BorgRWProblems|NorthSouth|scratchpad|C:[/\\]" \
+              --exclude-dir=.git --exclude-dir=plan --exclude=ci.yml .; then
+            echo "::error::Private references found (see matches above)"
+            exit 1
+          fi
+          echo "scrub clean"

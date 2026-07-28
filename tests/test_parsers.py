@@ -1,0 +1,70 @@
+"""Parser regression tests against both committed example models (TEST-001..003).
+
+Run from the repo root:  python -m unittest discover -s tests
+"""
+import json
+import subprocess
+import sys
+import unittest
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+EXPLAIN = REPO / "skills" / "explain-riverware-model" / "explain.py"
+DIGEST = REPO / "skills" / "visualize-riverware-model" / "digest_to_json.py"
+MODELS = {
+    "ArborBasin": REPO / "examples" / "ArborBasin" / "ArborBasin.mdl",
+    "saratoga": REPO / "examples" / "TwoResOps" / "saratoga_v2.4.mdl",
+}
+
+
+def run_script(script: Path, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run([sys.executable, str(script), *map(str, args)],
+                          capture_output=True, text=True, cwd=str(REPO))
+
+
+class TestExplain(unittest.TestCase):
+    def test_both_models_digest(self):
+        for name, model in MODELS.items():
+            with self.subTest(model=name):
+                proc = run_script(EXPLAIN, model)
+                self.assertEqual(proc.returncode, 0, proc.stderr)
+                self.assertIn("Simulation objects:", proc.stdout)
+                count = int(proc.stdout.split("Simulation objects:")[1]
+                            .splitlines()[0])
+                self.assertGreater(count, 0)
+                self.assertIn("Embedded RPL sets", proc.stdout)
+
+    def test_stdout_ascii(self):
+        for name, model in MODELS.items():
+            with self.subTest(model=name):
+                proc = run_script(EXPLAIN, model)
+                proc.stdout.encode("ascii")  # raises on non-ASCII (CON-003)
+
+
+class TestDigestToJson(unittest.TestCase):
+    def test_json_structure(self):
+        for name, model in MODELS.items():
+            with self.subTest(model=name):
+                proc = run_script(DIGEST, model)
+                self.assertEqual(proc.returncode, 0, proc.stderr)
+                d = json.loads(proc.stdout)
+                self.assertTrue(d["objects"])
+                self.assertTrue(d["links"])
+                for o in d["objects"]:
+                    self.assertIn("name", o)
+                    self.assertIn("type", o)
+
+    def test_arborbasin_has_curated_series(self):
+        proc = run_script(DIGEST, MODELS["ArborBasin"])
+        d = json.loads(proc.stdout)
+        self.assertGreaterEqual(len(d["series"]), 1)
+        slots = {s["slot"] for s in d["series"]}
+        self.assertTrue(slots <= {"Pool Elevation", "Outflow", "Storage"})
+
+    def test_json_ascii(self):
+        proc = run_script(DIGEST, MODELS["saratoga"])
+        proc.stdout.encode("ascii")
+
+
+if __name__ == "__main__":
+    unittest.main()

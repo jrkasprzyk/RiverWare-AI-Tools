@@ -12,11 +12,11 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
 class TestBuildRclScript(unittest.TestCase):
     def test_full_loop(self):
-        rcl = rw_batch.build_rcl_script("C:/models/ArborBasin.mdl",
+        rcl = rw_batch.build_rcl_script("models/ArborBasin.mdl",
                                         "From Borg-RiverWare",
                                         "To Borg-RiverWare Single Run")
         self.assertEqual(rcl.splitlines(), [
-            "OpenWorkspace {C:/models/ArborBasin.mdl}",
+            "OpenWorkspace {models/ArborBasin.mdl}",
             "InvokeDMI {From Borg-RiverWare}",
             "StartController",
             "InvokeDMI {To Borg-RiverWare Single Run}",

@@ -104,8 +104,9 @@ installation.
 - [x] Visualization skill + dashboards on GitHub Pages
 - [x] Rule-drafting skill + request→rule case studies
 - [x] MCP server prototype (live batch-mode control, verified on RiverWare 9.7)
-- [ ] Integration overview: `docs/ai-riverware-integration.md`
-- [ ] Verified GitHub Copilot walkthrough + CI
+- [x] Integration overview: [`docs/ai-riverware-integration.md`](docs/ai-riverware-integration.md)
+- [x] CI (parser + MCP unit tests, private-reference scrub gate)
+- [ ] Verified GitHub Copilot walkthrough
 
 ## Contributing
 
