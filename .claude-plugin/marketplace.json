@@ -1,0 +1,13 @@
+{
+  "name": "riverware-ai-tools",
+  "owner": {
+    "name": "Joseph Kasprzyk"
+  },
+  "plugins": [
+    {
+      "name": "riverware-ai-tools",
+      "source": "./",
+      "description": "Skills for explaining, visualizing, and automating RiverWare models with AI"
+    }
+  ]
+}
