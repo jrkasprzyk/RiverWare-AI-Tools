@@ -4,13 +4,13 @@ version: 2.0
 date_created: 2026-07-28
 last_updated: 2026-07-28
 owner: Joseph Kasprzyk (jkasprzyk@gmail.com)
-status: 'Planned'
+status: 'In progress'
 tags: [feature, architecture, documentation, skills, riverware, mcp]
 ---
 
 # Introduction
 
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)
 
 This plan converts the current repository (one Claude Code skill, two example `.mdl` models) into a public demonstration of how AI tools interface with RiverWare today and how they could integrate in the future. Version 2.0 incorporates the owner's design-interview decisions of 2026-07-28: primary audience is RiverWare modelers new to AI; the repo goes public early (after Phases 1–2) and is built in the open at `github.com/jrkasprzyk/RiverWare-AI-Tools`; v1 ships three skills (explain, visualize, draft-rules), GitHub Pages hosting for dashboards, a working MCP server prototype wrapping RiverWare batch mode, and fully tested support for both Claude Code and GitHub Copilot (no other tools maintained).
 
@@ -44,13 +44,13 @@ This plan converts the current repository (one Claude Code skill, two example `.
 
 | Task | Task Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-001 | Create `.claude-plugin/plugin.json` at repo root with `{"name": "riverware-ai-tools", "description": "Skills for explaining, visualizing, and automating RiverWare models with AI", "version": "0.1.0"}`. Claude Code plugin loading auto-discovers the top-level `skills/` directory, satisfying REQ-002/REQ-003(a). | | |
-| TASK-002 | Create `.claude-plugin/marketplace.json` listing the single plugin with source `"./"`, so `/plugin marketplace add jrkasprzyk/RiverWare-AI-Tools` works directly against the GitHub repo. | | |
-| TASK-003 | Create `.claude/skills/` bridge for clone-users (REQ-003(b)): for each skill in `skills/`, add `.claude/skills/<name>/SKILL.md` whose frontmatter copies name/description and whose body is one line pointing at `skills/<name>/SKILL.md`. Under 15 lines each. | | |
-| TASK-004 | Write root `README.md` for RiverWare modelers new to AI (REQ-007): what this repo demonstrates (AI ↔ RiverWare, optimizer-agnostic per REQ-005); step-by-step quick-starts for Claude Code (plugin install AND clone-and-run) and GitHub Copilot; skills table; examples table with GitHub Pages live links (REQ-008, links added in TASK-020); "Live-model control (MCP prototype)" section; roadmap link to `docs/ai-riverware-integration.md`. | | |
-| TASK-005 | Write `AGENTS.md` at repo root: repo layout, where skills live, the CON-002 never-read-raw rule, how to run the parsers, pointers to each SKILL.md. Generic entry point for any non-Claude, non-Copilot agent (REQ-006). | | |
-| TASK-006 | Add `LICENSE` (MIT, copyright Joseph Kasprzyk — confirmed 2026-07-28), `CONTRIBUTING.md` (skill folder layout, SKILL.md checklist per GUD-001, worked-example requirement per PAT-001), and `.gitignore` (`__pycache__/`, `*.pyc`, `.DS_Store`, `.venv/`, `digest.txt`). | | |
-| TASK-007 | Rename default branch `master` → `main` (`git branch -m master main`). | | |
+| TASK-001 | Create `.claude-plugin/plugin.json` at repo root with `{"name": "riverware-ai-tools", "description": "Skills for explaining, visualizing, and automating RiverWare models with AI", "version": "0.1.0"}`. Claude Code plugin loading auto-discovers the top-level `skills/` directory, satisfying REQ-002/REQ-003(a). | ✅ | 2026-07-28 |
+| TASK-002 | Create `.claude-plugin/marketplace.json` listing the single plugin with source `"./"`, so `/plugin marketplace add jrkasprzyk/RiverWare-AI-Tools` works directly against the GitHub repo. | ✅ | 2026-07-28 |
+| TASK-003 | Create `.claude/skills/` bridge for clone-users (REQ-003(b)): for each skill in `skills/`, add `.claude/skills/<name>/SKILL.md` whose frontmatter copies name/description and whose body is one line pointing at `skills/<name>/SKILL.md`. Under 15 lines each. | ✅ | 2026-07-28 |
+| TASK-004 | Write root `README.md` for RiverWare modelers new to AI (REQ-007): what this repo demonstrates (AI ↔ RiverWare, optimizer-agnostic per REQ-005); step-by-step quick-starts for Claude Code (plugin install AND clone-and-run) and GitHub Copilot; skills table; examples table with GitHub Pages live links (REQ-008, links added in TASK-020); "Live-model control (MCP prototype)" section; roadmap link to `docs/ai-riverware-integration.md`. | ✅ | 2026-07-28 |
+| TASK-005 | Write `AGENTS.md` at repo root: repo layout, where skills live, the CON-002 never-read-raw rule, how to run the parsers, pointers to each SKILL.md. Generic entry point for any non-Claude, non-Copilot agent (REQ-006). | ✅ | 2026-07-28 |
+| TASK-006 | Add `LICENSE` (MIT, copyright Joseph Kasprzyk — confirmed 2026-07-28), `CONTRIBUTING.md` (skill folder layout, SKILL.md checklist per GUD-001, worked-example requirement per PAT-001), and `.gitignore` (`__pycache__/`, `*.pyc`, `.DS_Store`, `.venv/`, `digest.txt`). | ✅ | 2026-07-28 |
+| TASK-007 | Rename default branch `master` → `main` (`git branch -m master main`). | ✅ | 2026-07-28 |
 
 ### Implementation Phase 2 — Generalize the explain skill, scrub, and go public
 
@@ -58,11 +58,11 @@ This plan converts the current repository (one Claude Code skill, two example `.
 
 | Task | Task Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-008 | Edit `skills/explain-riverware-model/SKILL.md`: replace the repo-root claim `C:\Github\BorgRWProblems` (line 21) with "the root of this repository"; replace `NorthSouth/` invocation examples (lines 29, 51) with `examples/ArborBasin/ArborBasin.mdl`; delete the hardcoded scratchpad path block (lines 46–52) in favor of "redirect to a temp file of your choice". | | |
-| TASK-009 | Same file: remove private-context instructions — the `.documentation/.claude/commands/riverware-doc-edit.md` citation (line 79; inline the style rules, already listed), the `memory/project-overview.md` / `.plan/` cross-reference paragraph (lines 89–92), and Borg-specific narration guidance (lines 76–77), rewritten as "if the model is wired to an external optimizer or DMI-driven workflow, name the objective/constraint slots involved". | | |
-| TASK-010 | Same file: repoint the "Worked example" section (lines 99–103) at `examples/ArborBasin/ArborBasin_explained.md` (TASK-012). Both example models embed their rulesets in the `.mdl` (verified 2026-07-28: saratoga carries operating policy groups "Roberto Rules"/"Cora Rules"/"Post Processing" in `loadedSet`; ArborBasin carries MRM and init rule sets) — update the embedded-ruleset guidance and the verified-formats note accordingly. | | |
-| TASK-011 | Audit `skills/explain-riverware-model/explain.py` for absolute paths or private references (grep `joka0958`, `BorgRW`, `C:/`, `C:\\`); fix any found. Run it against both example models; confirm non-empty object, slot, and embedded-ruleset output for each. | | |
-| TASK-012 | Run the explain skill on `examples/ArborBasin/ArborBasin.mdl`, then polish the narrative to authored-documentation quality (REQ-004: heavily polished, fact-checked against the digest) → commit `examples/ArborBasin/ArborBasin_explained.md`. Write `examples/ArborBasin/README.md` with CADSWES training-model attribution (SEC-002) and the regeneration command. | | |
+| TASK-008 | Edit `skills/explain-riverware-model/SKILL.md`: replace the repo-root claim `C:\Github\BorgRWProblems` (line 21) with "the root of this repository"; replace `NorthSouth/` invocation examples (lines 29, 51) with `examples/ArborBasin/ArborBasin.mdl`; delete the hardcoded scratchpad path block (lines 46–52) in favor of "redirect to a temp file of your choice". | ✅ | 2026-07-28 |
+| TASK-009 | Same file: remove private-context instructions — the `.documentation/.claude/commands/riverware-doc-edit.md` citation (line 79; inline the style rules, already listed), the `memory/project-overview.md` / `.plan/` cross-reference paragraph (lines 89–92), and Borg-specific narration guidance (lines 76–77), rewritten as "if the model is wired to an external optimizer or DMI-driven workflow, name the objective/constraint slots involved". | ✅ | 2026-07-28 |
+| TASK-010 | Same file: repoint the "Worked example" section (lines 99–103) at `examples/ArborBasin/ArborBasin_explained.md` (TASK-012). Both example models embed their rulesets in the `.mdl` (verified 2026-07-28: saratoga carries operating policy groups "Roberto Rules"/"Cora Rules"/"Post Processing" in `loadedSet`; ArborBasin carries MRM and init rule sets) — update the embedded-ruleset guidance and the verified-formats note accordingly. | ✅ | 2026-07-28 |
+| TASK-011 | Audit `skills/explain-riverware-model/explain.py` for absolute paths or private references (grep `joka0958`, `BorgRW`, `C:/`, `C:\\`); fix any found. Run it against both example models; confirm non-empty object, slot, and embedded-ruleset output for each. (Also scrubbed private metadata found inside both `.mdl` files: autosave temp paths, save-history usernames, OneDrive ruleset paths, provenance slot note.) | ✅ | 2026-07-28 |
+| TASK-012 | Run the explain skill on `examples/ArborBasin/ArborBasin.mdl`, then polish the narrative to authored-documentation quality (REQ-004: heavily polished, fact-checked against the digest) → commit `examples/ArborBasin/ArborBasin_explained.md`. Write `examples/ArborBasin/README.md` with CADSWES training-model attribution (SEC-002) and the regeneration command. | ✅ | 2026-07-28 |
 | TASK-013 | Run the SEC-001 scrub grep (`grep -rniE "joka0958|BorgRWProblems|NorthSouth|scratchpad|C:[/\\\\]" --exclude-dir=.git --exclude-dir=plan .`); fix all hits. Push to `github.com/jrkasprzyk/RiverWare-AI-Tools` and flip visibility to public. | | |
 
 ### Implementation Phase 3 — Skill: visualize-riverware-model

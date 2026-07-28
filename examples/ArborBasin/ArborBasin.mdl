@@ -9,7 +9,7 @@
 Catalog {\
 <Catalog>\
  <SimWorkspace><ModelLockSet value="0"></ModelLockSet>\
-  <AutoSave notifyType="none" saveDir="C:/Users/lynn/AppData/Local/Temp/" saveInterval="15" saveModelFile="0" saveOutputs="0"></AutoSave>\
+  <AutoSave notifyType="none" saveDir="." saveInterval="15" saveModelFile="0" saveOutputs="0"></AutoSave>\
  </SimWorkspace>\
  <DiagMgr infoDiag="1"></DiagMgr>\
  <MRMControl><mrmCfgList><mrmCfg name="Arbor Basin Baseline MRM" numTrace="20" traceMode="Traces"><descriptorList></descriptorList>\
@@ -80,12 +80,12 @@ ModelAccountCount  0
 ModelSupplyCount   0
 ModelExchangeCount 0
 DST 0
-$ws.Model.FileInfo saveInfo 1 {lynn} {01-28-2025 11:43:26} {RiverWare 9.4} 
+$ws.Model.FileInfo saveInfo 1 {user} {01-28-2025 11:43:26} {RiverWare 9.4} 
 $ws.Model.FileInfo comment {}
 $ws.Model.RunHistoryParam MaxModelRunHistoryRecs 1
-$ws.Model.RunHistoryRecord 1 0 {RiverWare 9.1.1} {lynn} \
+$ws.Model.RunHistoryRecord 1 0 {RiverWare 9.1.1} {user} \
  {Rulebased Simulation} {08-25-2023 10:02:03} {08-25-2023 10:02:04} {Finished}
-$ws.AutoSave 1 0 0 15 {C:/Users/lynn/AppData/Local/Temp/} none
+$ws.AutoSave 1 0 0 15 {.} none
 $ws.StringMgr 1 {\
 <stringMgr name="" size="256"/>\
 }
@@ -15652,7 +15652,7 @@ $cfg useEnsOutput 0
 $cfg useCsvFiles 0
 $cfg useNetCdfFiles 0
 $cfg loadedRules 1
-$cfg rules {C:/Users/lynn/OneDrive - UCB-O365/Borg/Studies/ArborBasin/ArborBasin.8.5.rls} 
+$cfg rules {ArborBasin.8.5.rls} 
 $cfg loadedOpt 0
 $cfg opt 
 $cfg optRunSeq 0 {} {}
@@ -15693,7 +15693,7 @@ $cfg useEnsOutput 0
 $cfg useCsvFiles 0
 $cfg useNetCdfFiles 0
 $cfg loadedRules 1
-$cfg rules {C:/Users/lynn/OneDrive - UCB-O365/Borg/Studies/ArborBasin/ArborBasin.8.5.rls} 
+$cfg rules {ArborBasin.8.5.rls} 
 $cfg loadedOpt 0
 $cfg opt 
 $cfg optRunSeq 0 {} {}

@@ -9,7 +9,7 @@
 Catalog {\
 <Catalog>\
  <SimWorkspace><ModelLockSet value="0"></ModelLockSet>\
-  <AutoSave notifyType="none" saveDir="C:/Users/joka0958/AppData/Local/Temp/" saveInterval="15" saveModelFile="0" saveOutputs="0"></AutoSave>\
+  <AutoSave notifyType="none" saveDir="." saveInterval="15" saveModelFile="0" saveOutputs="0"></AutoSave>\
  </SimWorkspace>\
  <DiagMgr infoDiag="0"></DiagMgr>\
  <MRMControl><mrmCfgList></mrmCfgList>\
@@ -41,12 +41,12 @@ ModelAccountCount  0
 ModelSupplyCount   0
 ModelExchangeCount 0
 DST 0
-$ws.Model.FileInfo saveInfo 1 {joka0958} {07-14-2026 18:06:56} {RiverWare 9.7} 
+$ws.Model.FileInfo saveInfo 1 {user} {07-14-2026 18:06:56} {RiverWare 9.7} 
 $ws.Model.FileInfo comment {}
 $ws.Model.RunHistoryParam MaxModelRunHistoryRecs 1
-$ws.Model.RunHistoryRecord 1 0 {RiverWare 9.7} {joka0958} \
+$ws.Model.RunHistoryRecord 1 0 {RiverWare 9.7} {user} \
  {Rulebased Simulation} {07-14-2026 17:38:15} {07-14-2026 17:38:16} {Finished}
-$ws.AutoSave 1 0 0 15 {C:/Users/joka0958/AppData/Local/Temp/} none
+$ws.AutoSave 1 0 0 15 {.} none
 $ws.StringMgr 1 {\
 <stringMgr name="" size="256"/>\
 }
@@ -753,7 +753,7 @@ set s "$o.Convergence Percentage"
 set s "$o.Elevation Volume Table"
 "$s" order 17 
 "$s" UUID {5052b0e9-4b56-44c1-9ca9-3a727a03a368}
-"$s" userDescript {2026-07-10: imported from Hayden v2.9.2 (BorgRWproblems repo)<br><br>2026-07-11: ensured that MCM was used as units}
+"$s" userDescript {2026-07-11: ensured that MCM was used as units}
 "$s" resize 50 2
 "$s" setRowLabels {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} 
 "$s" setColumnLabels {Pool Elevation} {Storage} 
