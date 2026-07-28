@@ -50,8 +50,9 @@ Every key above is a string and can also be set from the environment as
 The one list-valued setting, `output_slots`, is `config.json` only.
 
 For `riverware_exe` on Windows, point at `RiverWare.exe` inside your versioned
-install folder (by default under the CADSWES directory on the system drive).
-`config.json` is git-ignored, so machine paths stay local.
+install folder — by default `C:\Program Files\CADSWES\RiverWare 9.7\RiverWare.exe`, <!-- scrub-allow -->
+with the version number matching your install. `config.json` is git-ignored,
+so machine paths stay local.
 
 Register with Claude Code by adding to the project's `.mcp.json`:
 

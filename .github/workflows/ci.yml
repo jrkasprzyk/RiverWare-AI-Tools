@@ -31,15 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Private-reference scrub gate (SEC-001)
-        # -I skips binary files: compiled .pyc bytecode embeds the build machine's
-        # absolute paths and would otherwise trip the C:\ pattern for anyone
-        # running this command locally after the test suite.
-        run: |
-          if grep -rniEI "joka0958|BorgRWProblems|NorthSouth|scratchpad|C:[/\\]" \
-              --exclude-dir=.git --exclude-dir=__pycache__ --exclude-dir=.venv \
-              --exclude=ci.yml .; then
-            echo "::error::Private references found (see matches above)"
-            exit 1
-          fi
-          echo "scrub clean"
+      - name: Private-reference scrub gate
+        # Patterns and escape hatch live in the script so contributors can run
+        # the identical check locally: sh scripts/scrub.sh
+        run: sh scripts/scrub.sh

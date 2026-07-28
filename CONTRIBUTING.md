@@ -51,6 +51,24 @@ If you add a skill, also add a thin bridge at
 pointer line to `skills/<skill-name>/SKILL.md`) so users who clone the
 repo get the skill without installing the plugin.
 
+## The scrub gate
+
+This repository was carved out of a private one, so CI runs a regression guard
+that fails the build if a reference to the author's machine or private work
+reappears in a committed file. Run the identical check before pushing:
+
+```sh
+sh scripts/scrub.sh
+```
+
+It is not a secret scanner — it only knows the specific strings listed in the
+script, and GitHub's push protection covers credentials. If it flags something
+that is genuinely public content (a documented Windows install path, say), add
+a `scrub-allow` comment on that line rather than rewording around it. Patterns
+should be as specific as the leak they catch: one that also matches ordinary
+water-resources prose or a legitimately public model name will fire on
+innocent content, and a gate that cries wolf gets bypassed.
+
 ## Commit style
 
 Conventional Commits: `type(scope): imperative subject` with types
