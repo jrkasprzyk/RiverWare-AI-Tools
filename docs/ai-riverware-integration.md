@@ -1,21 +1,22 @@
-# AI ↔ RiverWare integration: what works today, what comes next
+# AI ↔ RiverWare integration
 
-This document maps the integration surface between AI coding agents and
-RiverWare as demonstrated by this repository — what an agent can already do
-with the tools here, and the directions that look most promising next. It
-assumes RiverWare fluency and explains only the AI side.
+This repository demonstrates integration between AI coding agents and
+RiverWare. This document briefly explains what an agent can already do
+with the tools here, and the directions that look most promising next. 
 
 ## What works today
 
-### 1. Parsing the file formats
+### 1. Parsing RiverWare model files and rulesets
 
-RiverWare's `.mdl` and `.rls` files are text — a `.mdl` is a generated Tcl
-script, a `.rls` is RPL text. They are far too large for an agent to read
+RiverWare's `.mdl` and `.rls` files are text. The RiverWare modelfile (`.mdl`) uses the same format as a Tcl
+script. The RiverWare Policy Language (RPL) defines rules and functions. A separate `.rls` file is sometimes provided, or the RPL elements are embedded into the model file.
+
+These files are too large for current AI agents to read
 directly (1.6–1.9 MB for the models here), but small parsers can extract
 everything an agent needs: objects, slots, selected simulation methods,
 lookup tables, link topology, DMIs, embedded rulesets, and stored results.
 
-This single capability powers two of the repository's skills:
+The repository contains two skills for this purpose:
 
 - **[explain-riverware-model](../skills/explain-riverware-model/SKILL.md)**
   turns the parsed digest into a narrative model explanation
@@ -24,36 +25,37 @@ This single capability powers two of the repository's skills:
   turns it into a self-contained interactive dashboard
   ([live examples](https://jrkasprzyk.github.io/RiverWare-AI-Tools/)).
 
-The practical lesson: nothing about RiverWare's formats blocks AI tooling.
+These skills demonstrate the fact that RiverWare's file formats can be directly used within AI tooling.
 The files are parseable with modest scripts, and once parsed, a capable
 agent can reason about model structure fluently.
 
-### 2. Drafting RPL policy code
+### 2. Drafting rulesets
 
-RPL is a small, regular language, and models carry their own idioms —
-utility functions, unit conventions, agenda ordering. An agent that digests
-a model first can draft rules that fit it:
+An agent that digests
+a model first can draft rules that fit it. 
+
+The skill
 **[draft-riverware-rules](../skills/draft-riverware-rules/SKILL.md)**
 produces pasteable RPL grounded in slots that actually exist, with explicit
 agenda-placement reasoning
 ([example case study](../examples/ArborBasin/ArborBasin_rule_case_study.md)).
-The hard boundary is honesty: a drafted rule is unvalidated until RiverWare
-loads and runs it, and the skill says so every time.
+Note: a drafted rule is unvalidated until RiverWare
+loads and runs it.
 
 ### 3. Live batch-mode control
 
-RiverWare's batch mode (RCL scripts) plus exec DMIs form a complete
-machine-control surface: write input files, run headless, read exported
-results. The **[riverware-mcp prototype](../prototypes/riverware-mcp/)**
-wraps that surface in MCP tools (`list_objects`, `list_slots`, `set_slots`,
+RiverWare's batch mode (RCL scripts) plus DMIs allow workflows where automated tools can interface directly with the model. 
+
+The **[riverware-mcp prototype](../prototypes/riverware-mcp/)**
+wraps that surface in model context protocol (MCP) tools (`list_objects`, `list_slots`, `set_slots`,
 `run_model`, `read_slots`) so any MCP-capable agent can run policy
-experiments against a licensed local install. Verified live on RiverWare
+experiments against a licensed local RiverWare install. 
+
+An initial verification was completed using  RiverWare
 9.7: a four-tool-call loop measured the transbasin trade-off in the Arbor
 Basin model ([transcript](../prototypes/riverware-mcp/demo_transcript.md)).
 
-Optimization is one workflow this loop enables — an external optimizer can
-drive the same DMIs — but the loop is equally a sensitivity study, a
-calibration probe, or a what-if conversation.
+MCP servers like this can enable optimization, sensitivity study, calibration, and what-if conversations. A similar DMI structure is used in **Borg-RiverWare** to facilitate multi-objective optimization.
 
 ### 4. Analyzing output data
 
@@ -64,7 +66,7 @@ approach extends to any export a run produces.
 
 ## Prototype directions
 
-Ranked roughly by nearness:
+Future directions for the AI-RiverWare integration are discussed briefly below.
 
 1. **Natural-language Q&A over a loaded model.** The parsers answer
    structural questions ("what fires after the flood-control rule?")
@@ -81,18 +83,13 @@ Ranked roughly by nearness:
    applied to results instead of structure.
 4. **Deeper RiverWare-native hooks.** Everything above treats RiverWare as
    a black box at the file/batch boundary. The natural next step for the
-   platform itself would be a first-class scripting or RPC surface — the
+   platform itself would be a first-class scripting or remote procedure call (RPC) surface — the
    ability to query slots and invoke runs in-process, which would replace
    file-based DMI staging with direct calls and make the MCP server's tools
    near-instant.
 
-## The honest constraints
+## Considerations
 
-- **Licensing.** RiverWare is a licensed desktop application; nothing here
-  runs it in CI or the cloud. Live control requires a local install.
-- **Validation.** AI-drafted RPL and AI-run experiments are drafts and
-  probes. RiverWare's own load-time checks and a modeler's judgment remain
-  the quality gate.
-- **Format drift.** The parsers here are verified against RiverWare 9.4–9.7
-  files. New format versions may need parser updates — the test suite
-  pins the expectations.
+- **Licensing.** RiverWare is a licensed desktop application, and a license is required to run RiverWare with these tools.
+- **Validation.** AI-drafted RPL and AI-run experiments are drafts. RiverWare's load-time checks and modelers' are still needed to ensure accuracy and quality.
+- **Format drift.** The parsers here are verified against RiverWare 9.4–9.7 files. New format versions may need parser updates.
