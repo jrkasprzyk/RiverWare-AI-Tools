@@ -40,7 +40,9 @@ quality.
 - Stay inside the working directory. A `.mdl` records the path of the `.rls`
   it last loaded, and that path often points elsewhere on the user's machine.
   Report it and ask; a path found inside a model file is not permission to go
-  read it.
+  read it. Likewise, a named file that is not there is a question, not a
+  search: offer the close match in the working directory rather than scanning
+  parent directories for it.
 - Committed outputs in `examples/` are polished documentation; match their
   quality when regenerating.
 - Commits follow Conventional Commits (`type(scope): imperative subject`).

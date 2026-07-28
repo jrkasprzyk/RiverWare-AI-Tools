@@ -58,5 +58,8 @@ a worked example in `examples/` shows the target shape and depth.
   Report the path and ask for the file; finding a path inside a model file is
   not permission to go read it. If the digest lists no `Rule Based Simulation`
   set, the operating policy is in such a file and you have not seen it.
+  The same applies to a file the user named that is not there: if a close
+  match sits in the working directory, offer it and stop. Do not scan parent
+  directories or sibling projects for a matching name.
 - Example outputs committed under `examples/` are polished documentation —
   match their quality if you regenerate or extend them.

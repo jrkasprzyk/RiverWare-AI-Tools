@@ -19,6 +19,23 @@ directory is the user's own project — prefix the script and `examples/` paths
 with it. The `.mdl` the user asks about is their own file and is not under that
 root.
 
+## Stay inside the working directory
+
+Work only with files in the user's project. The plugin's own bundle under
+`${CLAUDE_PLUGIN_ROOT}` — its scripts and its `examples/` models — is yours to
+read. The rest of the filesystem is not.
+
+- **A named file that is not there is a question, not a search.** If a close
+  match sits in the working directory, offer it and stop: asked for
+  `saratoga_v2.1.md`, found `saratoga_v2.1.mdl`, say so. Do not scan parent
+  directories, sibling projects, or the drive for a matching name.
+- **A path found inside a model file is not permission to open it.** A `.mdl`
+  records where its ruleset and data lived on the author's machine, often
+  outside the project. Report the path and ask.
+
+Widening the search is cheaper to do than asking is, which is why it happens
+first. Ask.
+
 ## Step 1 — digest the model first, always
 
 Never draft against an unread model. Run the explain skill's parser to get the
