@@ -13,9 +13,9 @@ mode) and walks you through the AI side step by step. It demonstrates:
 - **Understanding model files** — AI agents that parse `.mdl` and `.rls`
   files and write plain-language narrative explanations of a model.
 - **Visualizing models** — self-contained HTML dashboards of model
-  structure and key time series *(in development)*.
+  structure and key time series.
 - **Drafting policy rules** — turning a plain-language operating-policy
-  request into a pasteable RPL rule *(in development)*.
+  request into a pasteable RPL rule.
 - **Live model control** — a prototype [MCP](https://modelcontextprotocol.io)
   server that lets an AI agent set inputs, run RiverWare in batch mode, and
   read results back *(in development)*.
@@ -71,16 +71,18 @@ these skills — point it at [AGENTS.md](AGENTS.md).
 | Skill | What it does | Status |
 |-------|--------------|--------|
 | [explain-riverware-model](skills/explain-riverware-model/SKILL.md) | Parse a `.mdl`/`.rls` file and write a narrative explanation of the model | Available |
-| visualize-riverware-model | Render model structure and key series as a self-contained HTML dashboard | Planned |
-| draft-riverware-rules | Draft a pasteable RPL rule from a plain-language policy request | Planned |
+| [visualize-riverware-model](skills/visualize-riverware-model/SKILL.md) | Render model structure and key series as a self-contained HTML dashboard | Available |
+| [draft-riverware-rules](skills/draft-riverware-rules/SKILL.md) | Draft a pasteable RPL rule from a plain-language policy request | Available |
 
 ## Examples
 
 | Model | Description | Outputs |
 |-------|-------------|---------|
-| [ArborBasin](examples/ArborBasin/) | The CADSWES RiverWare training model | Narrative explanation *(coming)* |
-| [TwoResOps](examples/TwoResOps/) | A two-reservoir operations model | Narrative explanation *(coming)* |
+| [ArborBasin](examples/ArborBasin/) | The CADSWES RiverWare training model | [Narrative](examples/ArborBasin/ArborBasin_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html) · [Rule case study](examples/ArborBasin/ArborBasin_rule_case_study.md) |
+| [TwoResOps](examples/TwoResOps/) | Saratoga, a two-reservoir operations testbed | [Narrative](examples/TwoResOps/saratoga_v2.4_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/TwoResOps/saratoga_v2.4_dashboard.html) · [Rule case study](examples/TwoResOps/saratoga_v2.4_rule_case_study.md) |
 
+All examples are also browsable from the
+[GitHub Pages site](https://jrkasprzyk.github.io/RiverWare-AI-Tools/).
 Committed example outputs are produced with these skills and then
 human-polished into finished documentation.
 
@@ -95,9 +97,9 @@ requires a licensed local RiverWare installation.
 ## Roadmap
 
 - [x] Repository scaffold and Claude Code plugin packaging
-- [ ] Portable explain skill + first polished example (ArborBasin)
-- [ ] Visualization skill + dashboards on GitHub Pages
-- [ ] Rule-drafting skill + request→rule case studies
+- [x] Portable explain skill + first polished example (ArborBasin)
+- [x] Visualization skill + dashboards on GitHub Pages
+- [x] Rule-drafting skill + request→rule case studies
 - [ ] MCP server prototype (live batch-mode control)
 - [ ] Integration overview: `docs/ai-riverware-integration.md`
 - [ ] Verified GitHub Copilot walkthrough + CI

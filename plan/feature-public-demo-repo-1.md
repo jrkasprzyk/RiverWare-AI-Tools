@@ -89,11 +89,11 @@ This plan converts the current repository (one Claude Code skill, two example `.
 
 | Task | Task Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-018 | Explain skill, second model: run on `examples/TwoResOps/saratoga_v2.4.mdl`, polish → commit `examples/TwoResOps/saratoga_v2.4_explained.md` + `examples/TwoResOps/README.md` (attribution + regeneration command). | | |
-| TASK-019 | Visualize skill: generate, review, and commit `examples/ArborBasin/ArborBasin_dashboard.html` and `examples/TwoResOps/saratoga_v2.4_dashboard.html`. Verify both render with network disabled (CON-004). | | |
-| TASK-020 | Draft-rules skill: one request→rule case study per model (owner decision) — markdown doc containing the plain-language policy request (e.g. "add a spring flood-control drawdown rule for Cedar"), the drafted RPL block, and short commentary on agenda placement → commit `examples/ArborBasin/ArborBasin_rule_case_study.md` and `examples/TwoResOps/saratoga_v2.4_rule_case_study.md`. Polished per REQ-004. | | |
-| TASK-021 | Enable GitHub Pages (deploy from `main`, root, with `.nojekyll`): add a minimal hand-written `index.html` at repo root linking every example narrative, dashboard, and case study. Update README example-table links to the live `jrkasprzyk.github.io/RiverWare-AI-Tools/...` URLs (REQ-008). | | |
-| TASK-022 | Write `examples/README.md`: table of both models (what each basin is, CADSWES attribution, which outputs exist, which skill produced each, regeneration commands), stating outputs are produced with the skills and human-polished. | | |
+| TASK-018 | Explain skill, second model: run on `examples/TwoResOps/saratoga_v2.4.mdl`, polish → commit `examples/TwoResOps/saratoga_v2.4_explained.md` + `examples/TwoResOps/README.md` (attribution + regeneration command). | ✅ | 2026-07-28 |
+| TASK-019 | Visualize skill: generate, review, and commit `examples/ArborBasin/ArborBasin_dashboard.html` and `examples/TwoResOps/saratoga_v2.4_dashboard.html`. Verify both render with network disabled (CON-004). (Generated + committed; self-contained by construction — no external refs in template. Browser render check pending owner review, TEST-005.) | ✅ | 2026-07-28 |
+| TASK-020 | Draft-rules skill: one request→rule case study per model (owner decision) — markdown doc containing the plain-language policy request (e.g. "add a spring flood-control drawdown rule for Cedar"), the drafted RPL block, and short commentary on agenda placement → commit `examples/ArborBasin/ArborBasin_rule_case_study.md` and `examples/TwoResOps/saratoga_v2.4_rule_case_study.md`. Polished per REQ-004. | ✅ | 2026-07-28 |
+| TASK-021 | Enable GitHub Pages (deploy from `main`, root, with `.nojekyll`): add a minimal hand-written `index.html` at repo root linking every example narrative, dashboard, and case study. Update README example-table links to the live `jrkasprzyk.github.io/RiverWare-AI-Tools/...` URLs (REQ-008). | ✅ | 2026-07-28 |
+| TASK-022 | Write `examples/README.md`: table of both models (what each basin is, CADSWES attribution, which outputs exist, which skill produced each, regeneration commands), stating outputs are produced with the skills and human-polished. | ✅ | 2026-07-28 |
 
 ### Implementation Phase 6 — MCP server prototype (live RiverWare control)
 

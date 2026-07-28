@@ -15,6 +15,8 @@ embedded RPL ruleset.
 |------|------------|
 | `ArborBasin.mdl` | The RiverWare model (RiverWare 9.4 format, ~1.7 MB Tcl text) |
 | `ArborBasin_explained.md` | Narrative explanation produced with the explain skill, human-polished |
+| `ArborBasin_dashboard.html` | Self-contained interactive dashboard produced with the visualize skill ([live version](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html)) |
+| `ArborBasin_rule_case_study.md` | Request → rule walkthrough produced with the draft-rules skill |
 
 ## Regenerating the outputs
 
