@@ -7,11 +7,13 @@ they show what the workflow delivers after review, not raw generation.
 
 | Model | What it is | Committed outputs |
 |-------|-----------|-------------------|
-| [ArborBasin](ArborBasin/) | The CADSWES RiverWare training model: 41 objects, two basins joined by a transbasin diversion, a five-reservoir power cascade, irrigation districts, and a groundwater complex. Included with attribution to [CADSWES](https://cadswes.colorado.edu/), University of Colorado Boulder. | [Narrative](ArborBasin/ArborBasin_explained.md) · [Dashboard](ArborBasin/ArborBasin_dashboard.html) · [Rule case study](ArborBasin/ArborBasin_rule_case_study.md) |
-| [TwoResOps](TwoResOps/) | Saratoga, a synthetic two-reservoir operations testbed by the repository owner: irrigation, a fishery, a flood-prone city, and an ecological flow target scored by eight objective measures. | [Narrative](TwoResOps/saratoga_v2.4_explained.md) · [Dashboard](TwoResOps/saratoga_v2.4_dashboard.html) · [Rule case study](TwoResOps/saratoga_v2.4_rule_case_study.md) |
+| [ArborBasin](ArborBasin/) | The CADSWES RiverWare training model: 41 objects, two basins joined by a transbasin diversion, a five-reservoir power cascade, irrigation districts, and a groundwater complex. Included with attribution to [CADSWES](https://cadswes.colorado.edu/), University of Colorado Boulder. | [Narrative](ArborBasin/ArborBasin_explained.md) · [Dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html) · [Rule case study](ArborBasin/ArborBasin_rule_case_study.md) |
+| [TwoResOps](TwoResOps/) | Saratoga, a synthetic two-reservoir operations testbed by the repository owner: irrigation, a fishery, a flood-prone city, and an ecological flow target scored by eight objective measures. | [Narrative](TwoResOps/saratoga_v2.4_explained.md) · [Dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/TwoResOps/saratoga_v2.4_dashboard.html) · [Rule case study](TwoResOps/saratoga_v2.4_rule_case_study.md) |
 
-Live versions of the dashboards are served from
-[GitHub Pages](https://jrkasprzyk.github.io/RiverWare-AI-Tools/).
+The dashboard links above go to [GitHub Pages](https://jrkasprzyk.github.io/RiverWare-AI-Tools/),
+which serves the rendered page. The same files are committed next to each
+model (`*_dashboard.html`) — opening those on github.com shows HTML source,
+so download them or use the Pages links to actually view them.
 
 ## Which skill produced what
 

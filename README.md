@@ -22,8 +22,9 @@ tools. It demonstrates AI-assisted workflows that aid in:
 
 These tools are based on experimental tools developed for other RiverWare applications. Two example models are included here to demonstrate how the tools can be used, but the goal was to create tools for any RiverWare application.
 
-> This repository is under active construction. The [roadmap](#roadmap)
-> section below tracks what is done and what is coming.
+> This repository is under active construction. The
+> [upcoming work](#upcoming-work) section below tracks what is done and what
+> is coming.
 
 # Quick start
 
