@@ -9,3 +9,4 @@ prototypes/riverware-mcp/config.json
 # Internal planning notes stay local — they carry machine paths and private
 # repository names that the CI scrub gate rejects.
 plan/
+.private/
