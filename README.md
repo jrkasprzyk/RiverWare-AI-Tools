@@ -4,11 +4,10 @@
 ![Status](https://img.shields.io/badge/status-early%20development-orange)
 
 **A public demonstration of how AI tools can interface with
-[RiverWare](https://riverware.org) — today and in the future.**
+[RiverWare](https://riverware.org).**
 
 This repository is written for RiverWare modelers who are new to AI coding
-tools. It assumes you know RiverWare (models, slots, RPL rulesets, batch
-mode) and walks you through the AI side step by step. It demonstrates:
+tools. It demonstrates:
 
 - **Understanding model files** — AI agents that parse `.mdl` and `.rls`
   files and write plain-language narrative explanations of a model.
@@ -16,16 +15,16 @@ mode) and walks you through the AI side step by step. It demonstrates:
   structure and key time series.
 - **Drafting policy rules** — turning a plain-language operating-policy
   request into a pasteable RPL rule.
-- **Live model control** — a prototype [MCP](https://modelcontextprotocol.io)
-  server that lets an AI agent set inputs, run RiverWare in batch mode, and
-  read results back *(in development)*.
+- **Live model control** — a prototype model context protocol
+  ([MCP](https://modelcontextprotocol.io)) server that lets an AI agent set
+  inputs, run RiverWare in batch mode, and read results back
+  *(in development)*.
 
 This is a general AI + RiverWare demonstration. It is not tied to any
 particular optimizer or downstream tool.
 
-> **Building in the open.** This repository is under active construction.
-> The [roadmap](#roadmap) section below tracks what is done and what is
-> coming.
+> This repository is under active construction. The [roadmap](#roadmap)
+> section below tracks what is done and what is coming.
 
 ## Quick start — Claude Code
 
@@ -90,12 +89,14 @@ human-polished into finished documentation.
 
 [`prototypes/riverware-mcp/`](prototypes/riverware-mcp/) holds an
 experimental MCP server wrapping RiverWare batch mode with tools
-`list_objects`, `list_slots`, `set_slots`, `run_model`, and `read_slots` —
-enough for an AI agent to perturb inputs, rerun a model, and compare
-results. Verified live against RiverWare 9.7; see the
-[demo transcript](prototypes/riverware-mcp/demo_transcript.md) of a real
-set → run → read policy experiment. It requires a licensed local RiverWare
-installation.
+`list_objects`, `list_slots`, `set_slots`, `run_model`, and `read_slots`.
+These tools allow an AI agent to perturb inputs, rerun a model, and compare
+results.
+
+An initial verification was completed using RiverWare 9.7; see the
+[demo transcript](prototypes/riverware-mcp/demo_transcript.md) of a
+set → run → read policy experiment. A license is required to run RiverWare
+with these tools.
 
 ## Roadmap
 
@@ -103,7 +104,7 @@ installation.
 - [x] Portable explain skill + first polished example (ArborBasin)
 - [x] Visualization skill + dashboards on GitHub Pages
 - [x] Rule-drafting skill + request→rule case studies
-- [x] MCP server prototype (live batch-mode control, verified on RiverWare 9.7)
+- [x] MCP server prototype (live batch-mode control, initial verification on RiverWare 9.7)
 - [x] Integration overview: [`docs/ai-riverware-integration.md`](docs/ai-riverware-integration.md)
 - [x] CI (parser + MCP unit tests, private-reference scrub gate)
 - [ ] Verified GitHub Copilot walkthrough
