@@ -7,6 +7,8 @@ Entry point for any AI agent working in this repository.
 ```
 skills/                      One folder per skill: SKILL.md + helper scripts
   explain-riverware-model/   Narrative explanation of .mdl/.rls files
+  visualize-riverware-model/ Self-contained interactive HTML dashboard
+  draft-riverware-rules/     Draft a pasteable RPL policy rule
 examples/                    RiverWare models + committed skill outputs
   ArborBasin/                CADSWES training model
   TwoResOps/                 Two-reservoir operations model (saratoga)
@@ -37,6 +39,10 @@ Each skill is self-documenting — read its `SKILL.md` and follow it:
 
 - `skills/explain-riverware-model/SKILL.md` — write a plain-language
   narrative explanation of a model and its ruleset.
+- `skills/visualize-riverware-model/SKILL.md` — render a model as a
+  self-contained HTML dashboard (schematic, lookup tables, key series).
+- `skills/draft-riverware-rules/SKILL.md` — draft a pasteable RPL rule from
+  a plain-language policy request, and say where it belongs in the agenda.
 
 Skills follow a common pattern: a Python parser (3.10+, stdlib) extracts a
 digest; the SKILL.md tells you how to turn the digest into the deliverable;
@@ -46,5 +52,11 @@ a worked example in `examples/` shows the target shape and depth.
 
 - Scripts must print ASCII-safe output (Windows cp1252 consoles).
 - Cross-platform: everything runs on Windows, macOS, and Linux.
+- Stay inside the working directory. A `.mdl` records the path of the `.rls`
+  ruleset it last loaded, and that path routinely points elsewhere on the
+  user's machine — a network share, a sync folder, a client's directory.
+  Report the path and ask for the file; finding a path inside a model file is
+  not permission to go read it. If the digest lists no `Rule Based Simulation`
+  set, the operating policy is in such a file and you have not seen it.
 - Example outputs committed under `examples/` are polished documentation —
   match their quality if you regenerate or extend them.

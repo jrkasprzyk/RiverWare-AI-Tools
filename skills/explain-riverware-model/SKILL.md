@@ -18,15 +18,24 @@ in the explanation.
 1.6–1.9 MB (tens of thousands of lines) and blow the Read token limit. Run the driver
 instead; it gives you everything narratable in a few hundred lines.
 
-Paths below are relative to the root of this repository.
+Paths below are relative to the root of this repository. If this skill was
+installed as a **plugin**, that root is `${CLAUDE_PLUGIN_ROOT}` and the working
+directory is the user's own project — prefix the script and `examples/` paths
+with it. The `.mdl` the user asks about is their own file and is not under that
+root.
 
 ## Step 1 — extract the skeleton (the driver)
 
-`skills/explain-riverware-model/explain.py` (Python 3.10+, stdlib only).
+`skills/explain-riverware-model/explain.py` (Python 3.10+, stdlib only). It
+resolves its own imports from its own location, so it runs from any working
+directory.
 
 ```bash
-# from the repo root
+# cloned repository, run from the repo root
 python skills/explain-riverware-model/explain.py examples/ArborBasin/ArborBasin.mdl
+
+# installed as a plugin, run from anywhere
+python "${CLAUDE_PLUGIN_ROOT}/skills/explain-riverware-model/explain.py" path/to/your/model.mdl
 ```
 
 Pass a `.mdl` alone, a `.rls` alone, or both together (order does not matter — the
@@ -48,6 +57,29 @@ If the output is long, redirect it to a temporary file of your choice and grep i
 ```bash
 python skills/explain-riverware-model/explain.py examples/ArborBasin/ArborBasin.mdl > digest.txt
 ```
+
+## Step 1b — when the operating policy is not in the model
+
+Read the digest's **Embedded RPL sets** list before narrating. If it has no
+`Rule Based Simulation` set — only `Initialization Rules`, `MRM Rules`,
+`Expression Slots`, `Global Functions` — then the model's operating policy
+lives in a separate `.rls` you have not read. The digest cannot tell you
+whether that model has no policy or a policy you are missing, and those are
+very different models.
+
+**Stay inside the working directory.** The `.mdl` records the path of the
+ruleset it last loaded, and that path routinely points somewhere else on the
+user's machine — a network share, a sync folder, a client's directory. Report
+the recorded path and ask the user to supply the file. Do not go read it on
+your own initiative, and do not treat a path you found inside the `.mdl` as
+permission to leave the project.
+
+If the user declines or the file is unavailable, narrate the model anyway and
+state plainly, in the ruleset section, that the operating policy was not
+available and what the model records about it. **Do not reconstruct the policy
+from slot names, object descriptions, or rule-curve tables** — that produces
+confident prose about rules that may not exist, which is the one failure this
+skill must not have.
 
 ## Step 2 — narrate the digest
 

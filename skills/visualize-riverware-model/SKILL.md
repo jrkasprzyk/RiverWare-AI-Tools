@@ -14,16 +14,24 @@ output renders from `file://` or any static host.
 **Do not read the raw `.mdl`** — it is a 1.6–1.9 MB Tcl script. The generator
 script does all extraction.
 
-Paths below are relative to the root of this repository.
+Paths below are relative to the root of this repository. If this skill was
+installed as a **plugin**, that root is `${CLAUDE_PLUGIN_ROOT}` and the working
+directory is the user's own project — prefix the script and `examples/` paths
+with it. The `.mdl` the user asks about is their own file and is not under that
+root.
 
 ## Step 1 — generate the dashboard
 
 `skills/visualize-riverware-model/digest_to_json.py` (Python 3.10+, stdlib
-only; it imports the parser from the explain skill).
+only; it imports the parser from the explain skill, resolved from its own
+location, so it runs from any working directory).
 
 ```bash
-# from the repo root
+# cloned repository, run from the repo root
 python skills/visualize-riverware-model/digest_to_json.py examples/ArborBasin/ArborBasin.mdl --html
+
+# installed as a plugin, run from anywhere
+python "${CLAUDE_PLUGIN_ROOT}/skills/visualize-riverware-model/digest_to_json.py" path/to/your/model.mdl --html
 ```
 
 This writes `<modelname>_dashboard.html` next to the model (`-o path` to

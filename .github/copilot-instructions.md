@@ -37,6 +37,10 @@ quality.
   listing fires first, so later-firing rules override earlier ones.
 - Never invent RiverWare slot names — the parser digest is the source of
   truth.
+- Stay inside the working directory. A `.mdl` records the path of the `.rls`
+  it last loaded, and that path often points elsewhere on the user's machine.
+  Report it and ask; a path found inside a model file is not permission to go
+  read it.
 - Committed outputs in `examples/` are polished documentation; match their
   quality when regenerating.
 - Commits follow Conventional Commits (`type(scope): imperative subject`).

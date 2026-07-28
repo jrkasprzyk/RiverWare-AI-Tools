@@ -13,7 +13,11 @@ comes with an explicit statement of where it belongs in the agenda.
 The deliverable is a **draft for a modeler to review and load** — never a
 validated rule. Only RiverWare loading and running the ruleset validates RPL.
 
-Paths below are relative to the root of this repository.
+Paths below are relative to the root of this repository. If this skill was
+installed as a **plugin**, that root is `${CLAUDE_PLUGIN_ROOT}` and the working
+directory is the user's own project — prefix the script and `examples/` paths
+with it. The `.mdl` the user asks about is their own file and is not under that
+root.
 
 ## Step 1 — digest the model first, always
 
@@ -21,8 +25,11 @@ Never draft against an unread model. Run the explain skill's parser to get the
 ground truth:
 
 ```bash
-# from the repo root
+# cloned repository, run from the repo root
 python skills/explain-riverware-model/explain.py examples/ArborBasin/ArborBasin.mdl
+
+# installed as a plugin, run from anywhere
+python "${CLAUDE_PLUGIN_ROOT}/skills/explain-riverware-model/explain.py" path/to/your/model.mdl
 ```
 
 From the digest, collect what the draft must respect:
@@ -67,6 +74,16 @@ End every draft with words to this effect:
 
 ## Guardrails
 
+- **Never draft against a ruleset you have not read.** If the digest's
+  Embedded RPL sets list has no `Rule Based Simulation` set, the operating
+  policy is in a separate `.rls`. Stop. The `.mdl` records that file's path —
+  report it and ask the user to supply the file; do not go read it yourself,
+  since the recorded path often lies outside the project (a network share, a
+  sync folder, someone else's directory). Stay inside the working directory.
+  If the file cannot be supplied, say that drafting is blocked and why: with
+  no ruleset you cannot match its idioms, cannot reuse its utility functions,
+  and cannot place the rule in an agenda you have never seen. A draft written
+  blind looks equally authoritative and is far likelier to be wrong.
 - **Never invent slot names.** Every `Object.Slot` reference must appear in
   the digest. If the policy needs a slot the model lacks (e.g. a new threshold
   scalar or a custom series), say explicitly: "this needs a new slot
