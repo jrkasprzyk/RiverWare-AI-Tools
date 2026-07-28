@@ -2,9 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: ['**']
   pull_request:
-    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -29,9 +32,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Private-reference scrub gate (SEC-001)
+        # -I skips binary files: compiled .pyc bytecode embeds the build machine's
+        # absolute paths and would otherwise trip the C:\ pattern for anyone
+        # running this command locally after the test suite.
         run: |
-          if grep -rniE "joka0958|BorgRWProblems|NorthSouth|scratchpad|C:[/\\]" \
-              --exclude-dir=.git --exclude-dir=plan --exclude=ci.yml .; then
+          if grep -rniEI "joka0958|BorgRWProblems|NorthSouth|scratchpad|C:[/\\]" \
+              --exclude-dir=.git --exclude-dir=__pycache__ --exclude-dir=.venv \
+              --exclude=ci.yml .; then
             echo "::error::Private references found (see matches above)"
             exit 1
           fi
