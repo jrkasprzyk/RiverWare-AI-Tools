@@ -1,0 +1,4 @@
+units: MWH
+scale: 1.000000
+# Scalar Slot: System Data.Total Energy Neg [1 MWH]
+-12511616.89

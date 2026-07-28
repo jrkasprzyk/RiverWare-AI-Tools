@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "riverware": {
+      "command": "python",
+      "args": ["prototypes/riverware-mcp/server.py"]
+    }
+  }
+}

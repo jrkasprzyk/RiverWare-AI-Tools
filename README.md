@@ -88,11 +88,14 @@ human-polished into finished documentation.
 
 ## Live-model control (MCP prototype)
 
-`prototypes/riverware-mcp/` *(planned)* will hold an experimental MCP
-server wrapping RiverWare batch mode, exposing tools such as
-`list_objects`, `run_model`, `set_slots`, and `read_slots` — enough for an
-AI agent to perturb inputs, rerun a model, and compare results. It
-requires a licensed local RiverWare installation.
+[`prototypes/riverware-mcp/`](prototypes/riverware-mcp/) holds an
+experimental MCP server wrapping RiverWare batch mode with tools
+`list_objects`, `list_slots`, `set_slots`, `run_model`, and `read_slots` —
+enough for an AI agent to perturb inputs, rerun a model, and compare
+results. Verified live against RiverWare 9.7; see the
+[demo transcript](prototypes/riverware-mcp/demo_transcript.md) of a real
+set → run → read policy experiment. It requires a licensed local RiverWare
+installation.
 
 ## Roadmap
 
@@ -100,7 +103,7 @@ requires a licensed local RiverWare installation.
 - [x] Portable explain skill + first polished example (ArborBasin)
 - [x] Visualization skill + dashboards on GitHub Pages
 - [x] Rule-drafting skill + request→rule case studies
-- [ ] MCP server prototype (live batch-mode control)
+- [x] MCP server prototype (live batch-mode control, verified on RiverWare 9.7)
 - [ ] Integration overview: `docs/ai-riverware-integration.md`
 - [ ] Verified GitHub Copilot walkthrough + CI
 

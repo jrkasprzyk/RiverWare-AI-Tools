@@ -3,3 +3,5 @@ __pycache__/
 .DS_Store
 .venv/
 digest.txt
+prototypes/riverware-mcp/mcp_runs/
+prototypes/riverware-mcp/config.json

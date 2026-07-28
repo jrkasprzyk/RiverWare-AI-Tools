@@ -1,0 +1,11 @@
+start_date: 2018-1-1 24:00
+end_date: 2018-1-5 24:00
+timestep: 1 DAY
+units: cms
+scale: 1.000000
+# Series Slot: Cedar.Outflow [1 cms]
+120.50
+118.25
+NaN
+121.00
+119.75
