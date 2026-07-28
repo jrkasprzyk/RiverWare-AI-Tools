@@ -54,6 +54,24 @@ then from the marketplace, install the plugin:
 /plugin install riverware-ai-tools@riverware-ai-tools
 ```
 
+*Updating the plugin:* this repository is under active development, so the
+plugin changes. Updating takes two steps, because the marketplace catalog is
+cached separately from the installed plugin. First refresh the catalog:
+
+```
+/plugin marketplace update riverware-ai-tools
+```
+
+then update the plugin itself:
+
+```
+/plugin update riverware-ai-tools
+```
+
+Restart Claude Code for the new version to take effect. To check which
+version you have, run `/plugin` and look at the installed plugin list, or run
+`claude plugin list` from a terminal.
+
 **Option B — clone the entire repository**:
 
 If you would like access to the example RiverWare models and data, the best approach is to clone this repository:
@@ -79,8 +97,6 @@ Copilot to follow a skill, e.g.:
 
 > Follow skills/explain-riverware-model/SKILL.md to explain
 > examples/ArborBasin/ArborBasin.mdl
-
-*In a future update, we will perform a fully verified Copilot walkthrough.*
 
 **Other AI tools:** any agent that can read files and run Python can use
 these skills — point it at [AGENTS.md](AGENTS.md).
