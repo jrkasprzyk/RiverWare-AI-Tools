@@ -76,6 +76,11 @@ def parse_slot_export(text: str) -> dict:
 
     Header lines are `key: value` pairs; `#` lines are comments; everything
     else is one numeric value per line. Non-numeric stray lines are ignored.
+
+    `values` are the numbers exactly as exported. The header's `scale` is
+    reported, never applied — callers that care must decide what to do with it.
+    Every export observed so far carries `scale: 1.000000`; server.py flags any
+    other value rather than guessing which direction it multiplies.
     """
     out: dict = {"units": None, "scale": 1.0, "comment": "", "values": []}
     for raw in text.splitlines():

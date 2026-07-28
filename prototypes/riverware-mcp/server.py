@@ -8,8 +8,9 @@ installation through batch mode:
     run_model                  -- execute a batch run (RCL script + RiverWare)
     read_slots                 -- read exported slot values after a run
 
-Configuration (config.json next to this file, overridable by environment
-variables of the same name in upper case):
+Configuration lives in config.json next to this file. Every string-valued key
+also takes an environment override named `RIVERWARE_<KEY>` (so `model_path` is
+`RIVERWARE_MODEL_PATH`); `output_slots` is a list and is config.json only.
 
     riverware_exe        path to RiverWare.exe (env: RIVERWARE_EXE)
     model_path           the .mdl to operate on
@@ -42,6 +43,8 @@ from mcp.server.fastmcp import FastMCP
 
 import rw_batch
 
+RUN_TIMEOUT_S = 1800  # a batch run that exceeds this is hung, not slow
+
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 sys.path.insert(0, str(REPO / "skills" / "explain-riverware-model"))
@@ -67,13 +70,25 @@ DEFAULTS = {
 }
 
 
+def env_name(key: str) -> str:
+    """Config key -> its environment variable (`model_path` -> RIVERWARE_MODEL_PATH)."""
+    return "RIVERWARE_" + key.upper().removeprefix("RIVERWARE_")
+
+
 def load_config() -> dict:
     cfg = dict(DEFAULTS)
     cfg_file = HERE / "config.json"
     if cfg_file.exists():
         cfg.update(json.loads(cfg_file.read_text(encoding="utf-8")))
-    for key in cfg:
-        env = os.environ.get(key.upper())
+    # Only string-valued keys take an environment override, and only under the
+    # RIVERWARE_ prefix: bare names like WORKDIR or MODEL_PATH collide with
+    # whatever the user's shell already exports, and a list-valued key such as
+    # output_slots would arrive as a string and be iterated character by
+    # character. Lists are config.json only.
+    for key, default in DEFAULTS.items():
+        if not isinstance(default, str):
+            continue
+        env = os.environ.get(env_name(key))
         if env:
             cfg[key] = env
     return cfg
@@ -154,10 +169,15 @@ def run_model() -> str:
     log = workdir / "batch.log"
     env = dict(os.environ)
     env[CFG["env_var"]] = str(workdir)
-    proc = subprocess.run(
-        [exe, "--batch", str(rcl), "--log", str(log)],
-        cwd=str(workdir), env=env, capture_output=True, text=True,
-        timeout=1800)
+    try:
+        proc = subprocess.run(
+            [exe, "--batch", str(rcl), "--log", str(log)],
+            cwd=str(workdir), env=env, capture_output=True, text=True,
+            timeout=RUN_TIMEOUT_S)
+    except subprocess.TimeoutExpired:
+        return (f"error: RiverWare did not finish within {RUN_TIMEOUT_S}s and was "
+                f"killed. The batch log is at {log}; a hung run usually means the "
+                "model is waiting on a dialog or a DMI could not resolve a path.")
     tail = ""
     if log.exists():
         tail = "\n".join(log.read_text(encoding="utf-8",
@@ -185,7 +205,14 @@ def read_slots(slot_names: list[str] | None = None) -> str:
         vals = parsed["values"]
         shown = vals[0] if len(vals) == 1 else vals
         unit = f" {parsed['units']}" if parsed["units"] else ""
-        lines.append(f"{slot}: {shown}{unit}")
+        # The export header's `scale` is reported, never silently applied —
+        # RiverWare's convention for which direction it multiplies is not
+        # established here, and quietly guessing would hand the agent wrong
+        # numbers with no way to notice. Every export seen so far is scale 1.0.
+        note = "" if parsed["scale"] == 1.0 else (
+            f"   [export header scale={parsed['scale']}; the value above is the"
+            " raw exported number and has NOT been rescaled]")
+        lines.append(f"{slot}: {shown}{unit}{note}")
     return "\n".join(lines)
 
 

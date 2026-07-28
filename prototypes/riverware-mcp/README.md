@@ -43,10 +43,15 @@ with their defaults targeting `examples/ArborBasin/ArborBasin.mdl`):
 }
 ```
 
-`riverware_exe` can also come from the `RIVERWARE_EXE` environment variable.
-On Windows it is `RiverWare.exe` inside your versioned install folder (by
-default under the CADSWES directory on the system drive). `config.json` is
-git-ignored, so machine paths stay local.
+Every key above is a string and can also be set from the environment as
+`RIVERWARE_<KEY>` — `RIVERWARE_EXE`, `RIVERWARE_MODEL_PATH`,
+`RIVERWARE_WORKDIR`, and so on. The prefix is deliberate: bare names like
+`WORKDIR` would collide with whatever the surrounding shell already exports.
+The one list-valued setting, `output_slots`, is `config.json` only.
+
+For `riverware_exe` on Windows, point at `RiverWare.exe` inside your versioned
+install folder (by default under the CADSWES directory on the system drive).
+`config.json` is git-ignored, so machine paths stay local.
 
 Register with Claude Code by adding to the project's `.mcp.json`:
 

@@ -70,6 +70,14 @@ class TestParseSlotExport(unittest.TestCase):
         self.assertEqual(parsed["values"][0], 120.50)
         self.assertTrue(math.isnan(parsed["values"][2]))
 
+    def test_scale_is_reported_not_applied(self):
+        # The header scale is surfaced verbatim and the values are left raw;
+        # server.py is responsible for flagging a scale != 1.0 to the agent.
+        parsed = rw_batch.parse_slot_export(
+            (FIXTURES / "scaled_export.txt").read_text())
+        self.assertEqual(parsed["scale"], 1000.0)
+        self.assertEqual(parsed["values"], [14.375])
+
     def test_roundtrip(self):
         # what build_dmi_input writes, parse_slot_export can read back
         _, files = rw_batch.build_dmi_input({"A.B": 42.5})
