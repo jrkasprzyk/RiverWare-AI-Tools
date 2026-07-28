@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 import sys
 from pathlib import Path
@@ -181,4 +182,13 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1:]))
+    try:
+        _code = main(sys.argv[1:])
+        sys.stdout.flush()  # surface a closed pipe here, not at shutdown
+    except BrokenPipeError:
+        # Same guard as explain.py: the JSON digest is routinely piped into
+        # `head` or `python -m json.tool`, and a reader that exits early must
+        # not produce a traceback over the caller's output.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        _code = 0
+    raise SystemExit(_code)

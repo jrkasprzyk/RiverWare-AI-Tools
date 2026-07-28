@@ -18,6 +18,7 @@ Order of the two file args does not matter; extension decides which parser runs.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -297,4 +298,15 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1:]))
+    try:
+        _code = main(sys.argv[1:])
+        sys.stdout.flush()  # surface a closed pipe here, not at shutdown
+    except BrokenPipeError:
+        # The digest is long and gets piped into `head`, `grep -m`, or a pager
+        # that exits early. Redirect stdout to devnull so the interpreter's
+        # own shutdown flush cannot raise a second time and print "Exception
+        # ignored" over the caller's output. A reader closing the pipe asked
+        # for a truncated read, so this is a success, not a failure.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        _code = 0
+    raise SystemExit(_code)
