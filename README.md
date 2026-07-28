@@ -7,7 +7,7 @@
 [RiverWare](https://riverware.org).**
 
 This repository is written for RiverWare modelers who are new to AI coding
-tools. It demonstrates:
+tools. It demonstrates AI-assisted workflows that aid in:
 
 - **Understanding model files** — AI agents that parse `.mdl` and `.rls`
   files and write plain-language narrative explanations of a model.
@@ -20,25 +20,42 @@ tools. It demonstrates:
   inputs, run RiverWare in batch mode, and read results back
   *(in development)*.
 
-This is a general AI + RiverWare demonstration. It is not tied to any
-particular optimizer or downstream tool.
+These tools are based on experimental tools developed for other RiverWare applications. Two example models are included here to demonstrate how the tools can be used, but the goal was to create tools for any RiverWare application.
 
 > This repository is under active construction. The [roadmap](#roadmap)
 > section below tracks what is done and what is coming.
 
-## Quick start — Claude Code
+# Quick start
+
+Instructions are included for [Claude Code](https://claude.com/claude-code) and [GitHub Copilot](https://github.com/copilot); other AI frameworks could also benefit from some of the tools in the repo, but they have not been tested.
+
+## Claude Code
 
 [Claude Code](https://claude.com/claude-code) is Anthropic's agentic coding
-tool. Two ways to get the skills:
+tool. It can read and edit repository files, run terminal commands, and carry
+out multi-step coding tasks from natural-language prompts. In this repository,
+it can follow the skills in `skills/` to analyze RiverWare models and generate
+draft outputs. Two ways to get the skills:
 
 **Option A — install as a plugin** (works from any directory):
 
+The tools are available as a Claude Code plugin. This is a good option if you are already a user of RiverWare and Claude Code. This is the quickest option, and it is best if you already have a RiverWare project you'd like to explore with the tools.
+
+First, add the marketplace:
+
 ```
 /plugin marketplace add jrkasprzyk/RiverWare-AI-Tools
+```
+
+then from the marketplace, install the plugin:
+
+```
 /plugin install riverware-ai-tools@riverware-ai-tools
 ```
 
-**Option B — clone and open** (good if you also want the example models):
+**Option B — clone the entire repository**:
+
+If you would like access to the example RiverWare models and data, the best approach is to clone this repository:
 
 ```bash
 git clone https://github.com/jrkasprzyk/RiverWare-AI-Tools.git
@@ -46,24 +63,28 @@ cd RiverWare-AI-Tools
 claude
 ```
 
-Either way, the skills become available automatically. Try:
+**Using the skills**:
+
+Try:
 
 > Explain the model in examples/ArborBasin/ArborBasin.mdl
 
-## Quick start — GitHub Copilot
+## GitHub Copilot
 
 The `skills/` folders use the same `SKILL.md` layout GitHub Copilot
 consumes (see [github/awesome-copilot](https://github.com/github/awesome-copilot)).
-Clone the repository, open it in VS Code with Copilot enabled, and ask
+Clone the repository, open it in [VS Code](https://code.visualstudio.com/) with Copilot enabled, and ask
 Copilot to follow a skill, e.g.:
 
 > Follow skills/explain-riverware-model/SKILL.md to explain
 > examples/ArborBasin/ArborBasin.mdl
 
-*A fully verified Copilot walkthrough is on the roadmap.*
+*In a future update, we will perform a fully verified Copilot walkthrough.*
 
 **Other AI tools:** any agent that can read files and run Python can use
 these skills — point it at [AGENTS.md](AGENTS.md).
+
+# Contents
 
 ## Skills
 
@@ -88,7 +109,7 @@ human-polished into finished documentation.
 ## Live-model control (MCP prototype)
 
 [`prototypes/riverware-mcp/`](prototypes/riverware-mcp/) holds an
-experimental MCP server wrapping RiverWare batch mode with tools
+experimental model context protocol (MCP) server wrapping RiverWare batch mode with tools
 `list_objects`, `list_slots`, `set_slots`, `run_model`, and `read_slots`.
 These tools allow an AI agent to perturb inputs, rerun a model, and compare
 results.
@@ -98,18 +119,12 @@ An initial verification was completed using RiverWare 9.7; see the
 set → run → read policy experiment. A license is required to run RiverWare
 with these tools.
 
-## Roadmap
+# Upcoming Work
 
-- [x] Repository scaffold and Claude Code plugin packaging
-- [x] Portable explain skill + first polished example (ArborBasin)
-- [x] Visualization skill + dashboards on GitHub Pages
-- [x] Rule-drafting skill + request→rule case studies
-- [x] MCP server prototype (live batch-mode control, initial verification on RiverWare 9.7)
-- [x] Integration overview: [`docs/ai-riverware-integration.md`](docs/ai-riverware-integration.md)
-- [x] CI (parser + MCP unit tests, private-reference scrub gate)
 - [ ] Verified GitHub Copilot walkthrough
+- [ ] Editing example model descriptions and fine-tuning skills
 
-## Contributing
+# Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Licensed under the
+We welcome contributions, including new examples, modifications to skills, and new tools. See [CONTRIBUTING.md](CONTRIBUTING.md). Licensed under the
 [MIT License](LICENSE).
