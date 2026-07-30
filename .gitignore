@@ -6,7 +6,5 @@ digest.txt
 prototypes/riverware-mcp/mcp_runs/
 prototypes/riverware-mcp/config.json
 
-# Internal planning notes stay local — they carry machine paths and private
-# repository names that the CI scrub gate rejects.
-plan/
+# A private folder is available for local development and testing, but should not be committed to the repository.
 .private/
