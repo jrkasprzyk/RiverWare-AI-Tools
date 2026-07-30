@@ -81,7 +81,7 @@ ModelSupplyCount   0
 ModelExchangeCount 0
 DST 0
 $ws.Model.FileInfo saveInfo 1 {user} {01-28-2025 11:43:26} {RiverWare 9.4} 
-$ws.Model.FileInfo comment {}
+$ws.Model.FileInfo comment {Arbor Basin is the CADSWES training model: a west basin of five reservoirs in series (Aspen, Birch, Cedar, Dogwood, Elm) and an east basin centered on Hickory, linked by a transbasin diversion from Cedar into Hickory's inflow. The east basin serves irrigation districts and an interstate minimum flow requirement.}
 $ws.Model.RunHistoryParam MaxModelRunHistoryRecs 1
 $ws.Model.RunHistoryRecord 1 0 {RiverWare 9.1.1} {user} \
  {Rulebased Simulation} {08-25-2023 10:02:03} {08-25-2023 10:02:04} {Finished}
@@ -893,6 +893,7 @@ $ws SimObj $obj {LevelPowerReservoir} 145 766 {} 732 1639 482 923
  <SimObjAttribute name="Fed or NonFed" value="Nonfederal"/> \
  <SimObjAttribute name="PUD" value="Douglas"/> \
 </SimObjAttributes>}
+"$o" userDescript {Top reservoir of the west-basin power cascade. Its tailwater is set by Birch's pool elevation, so Birch's level directly controls the head on Aspen's turbines.}
 "$o" objOrd wsList 4
 "$o" objSlotOrderType ListOrder_COLSORT 0 Ascend
 "$o" sDM {Alternate Hydrologies} {None} {STD}
@@ -2632,6 +2633,7 @@ set s "$o.Outflow Min"
 set s "$o.Elevation Guide Curve"
 "$s" order 47 
 "$s" UUID {989b34d4-9f32-4fb7-bb48-fe5f0ed5591c}
+"$s" userDescript {Monthly target pool elevation for Aspen. The Operate to Guide Curve rule releases toward this level subject to the reservoir's maximum outflow.}
 "$s" resize 15 1
 "$s" setRowLabels {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} 
 "$s" setColumnLabels {} 
@@ -2857,6 +2859,7 @@ $ws SimObj $obj {LevelPowerReservoir} 231 636 {} 690 1456 430 730
  <SimObjAttribute name="Fed or NonFed" value="Nonfederal"/> \
  <SimObjAttribute name="PUD" value="Chelan"/> \
 </SimObjAttributes>}
+"$o" userDescript {Second power reservoir in the west cascade, between Aspen and Cedar. Its pool elevation sets Aspen's tailwater, which couples the two reservoirs' power operations.}
 "$o" objOrd wsList 8
 "$o" objSlotOrderType ListOrder_COLSORT 0 Ascend
 "$o" sDM {Alternate Hydrologies} {None} {STD}
@@ -4480,6 +4483,7 @@ set s "$o.Tail Water Reference Elevation"
 set s "$o.Outflow Target"
 "$s" order 50 
 "$s" UUID {653d43af-2481-4dfc-a792-bf302ac8527b}
+"$s" userDescript {Desired release from Birch, applied by the Birch Outflow Target rule after the elevation limits have had their say.}
 "$s" cvg 2 0.0001
 "$s" unit 19 {%f} 2
 "$s" minMax NaN NaN
@@ -4861,6 +4865,7 @@ $ws SimObj $obj {LevelPowerReservoir} 307 391 {} 751 1083 501 367
  <SimObjAttribute name="Fed or NonFed" value="Nonfederal"/> \
  <SimObjAttribute name="PUD" value="Grant"/> \
 </SimObjAttributes>}
+"$o" userDescript {Power reservoir below Cedar that also diverts directly to Dogwood Irrigation. Its tailwater is set by Elm's pool elevation.}
 "$o" objOrd wsList 13
 "$o" objSlotOrderType ListOrder_COLSORT 0 Ascend
 "$o" sDM {Alternate Hydrologies} {None} {STD}
@@ -6822,6 +6827,7 @@ $ws SimObj $obj {LevelPowerReservoir} 94 209 {} 1024 1030 774 314
  <SimObjAttribute name="Fed or NonFed" value="Nonfederal"/> \
  <SimObjAttribute name="PUD" value="Grant"/> \
 </SimObjAttributes>}
+"$o" userDescript {Bottom reservoir of the west cascade. It is operated to a Pool Elevation Target rather than a guide curve, and it honors an externally supplied Spill Required series when one is input.}
 "$o" objOrd wsList 16
 "$o" objSlotOrderType ListOrder_COLSORT 0 Ascend
 "$o" sDM {Alternate Hydrologies} {None} {STD}
@@ -8403,12 +8409,14 @@ set s "$o.Outflow Target"
 set s "$o.Pool Elevation Target"
 "$s" order 33 
 "$s" UUID {0063a135-000d-41c3-9089-6bc87487f4a9}
+"$s" userDescript {Pool elevation Elm is operated to. Elm has no guide curve; this scalar is what the Elm Pool Elevation Target rule solves toward each timestep.}
 "$s" units 2 {%f} 2
 "$s" value 148.5 {m}
 "$o" {SeriesSlot} {Spill Required}
 set s "$o.Spill Required"
 "$s" order 34 
 "$s" UUID {a7c57c95-12fd-4978-bfdb-6ea63892f929}
+"$s" userDescript {Optional externally supplied spill. Where a value is input for a timestep, Elm must pass at least that much, and the pool-elevation target rule yields to it.}
 "$s" cvg 2 0.0001
 "$s" unit 19 {%f} 2
 "$s" minMax NaN NaN
@@ -8599,6 +8607,7 @@ $ws SimObj $obj {StorageReservoir} 365 550 {} 337 360 337 360
 "$o" UUID {2b93662e-4943-4f09-89be-612336301245}
 "$o" objAttributes { \
 <SimObjAttributes simObjName="Cedar"/>}
+"$o" userDescript {Storage workhorse of the west basin and the source of the transbasin diversion. Its Diversion Min Elevation is the floor below which the diversion to the east basin is cut off entirely.}
 "$o" objOrd wsList 5032
 "$o" objSlotOrderType ListOrder_COLSORT 0 Ascend
 "$o" sDM {Alternate Hydrologies} {None} {STD}
@@ -9002,12 +9011,14 @@ set s "$o.Outflow Min"
 set s "$o.Diversion Min Elevation"
 "$s" order 27 
 "$s" UUID {60c86e7c-9a8d-49eb-a5fe-7658fde4d0e1}
+"$s" userDescript {Pool elevation below which no water is available to the transbasin diversion. Above it, available flow is whatever draws Cedar down to this level after the minimum outflow is met.}
 "$s" units 2 {%f} 2
 "$s" value 221.40000000000001 {m}
 "$o" {PeriodicSlot} {Guide Curve}
 set s "$o.Guide Curve"
 "$s" order 27 
 "$s" UUID {6439fb02-5f85-4623-9cf7-d17dac58b22e}
+"$s" userDescript {Monthly target pool elevation that Cedar is operated toward at each end of month. On non-month-end days the rule forecasts toward this same target rather than chasing it daily.}
 "$s" resize 12 1
 "$s" setRowLabels {} {} {} {} {} {} {} {} {} {} {} {} 
 "$s" setColumnLabels {} 
@@ -9580,6 +9591,7 @@ $ws SimObj $obj {DiversionObject} 517 538 {} 482 1224 531 508
 "$o" UUID {44b50671-8d7f-42ee-a5b1-a03128db32ad}
 "$o" objAttributes { \
 <SimObjAttributes simObjName="Transbasin Diversion"/>}
+"$o" userDescript {Moves water from Cedar in the west basin into Hickory's inflow in the east. It is the structural hinge of the model: what the west basin can spare determines what the east basin has to work with.}
 "$o" objOrd wsList 5048
 "$o" objSlotOrderType ListOrder_COLSORT 0 Ascend
 "$o" sDM {Diversion Object Solution Direction} {Solve for Outflow} {STD}
@@ -9608,6 +9620,7 @@ set s "$o.Outflow"
 set s "$o.Diversion Request"
 "$s" order 1 
 "$s" UUID {9f918fff-ed48-4f23-80bd-a4fcda374c5d}
+"$s" userDescript {Daily transbasin delivery request. It is not an input: initialization rules derive it from the monthly schedule and may then scale it per trace.}
 "$s" cvg 2 0.0001
 "$s" unit 19 {%f} 2
 "$s" minMax NaN NaN
@@ -9726,6 +9739,7 @@ set s "$o.Diversion Head"
 set s "$o.Diversion Schedule Monthly"
 "$s" order 13 
 "$s" UUID {5b7e8067-4699-4dc9-9bda-6aa453490552}
+"$s" userDescript {Monthly volume scheduled for transbasin delivery. An initialization rule spreads it evenly across the days of each month to produce the daily Diversion Request.}
 "$s" resize 12 1
 "$s" setRowLabels {} {} {} {} {} {} {} {} {} {} {} {} 
 "$s" setColumnLabels {} 
@@ -9758,6 +9772,7 @@ $ws SimObj $obj {AggDiversionSite} 609 331 {} 482 1354 760 638
 "$o" UUID {e1cec201-68c6-46c8-9e92-f1b71be8e0c2}
 "$o" objAttributes { \
 <SimObjAttributes simObjName="Juniper Irrigation"/>}
+"$o" userDescript {Aggregate diversion site serving four irrigation districts below Hickory. Its unmet request is what drives Hickory both to cut its own diversion and to supplement releases from storage.}
 "$o" objOrd wsList 5090
 "$o" objSlotOrderType ListOrder_DEFAULT 0 Ascend
 "$o" sDM {elementLinkStructureCategory} {Lumped Structure} {STD}
@@ -11075,6 +11090,7 @@ set s "$o.Diversion Capacity"
 set s "$o.Minimum Diversion Bypass"
 "$s" order 7 
 "$s" UUID {08cf3d11-4cb7-4527-9550-8d96f9472249}
+"$s" userDescript {Flow the Juniper Diversion must let past rather than divert, set each timestep to the effective interstate minimum flow. This is how the interstate requirement is actually enforced.}
 "$s" cvg 2 0.0001
 "$s" unit 19 {%f} 2
 "$s" minMax NaN NaN
@@ -11158,6 +11174,7 @@ $ws SimObj $obj {StorageReservoir} 684 488 {} 1003 1014 587 298
 "$o" UUID {cf0a6be2-9ac4-4242-840f-9de3eceaa2c7}
 "$o" objAttributes { \
 <SimObjAttributes simObjName="Hickory"/>}
+"$o" userDescript {Storage reservoir at the head of the east basin, fed by the Gage Above Hickory inflow plus the transbasin diversion. It balances Juniper Irrigation deliveries, the interstate flow requirement, and its own minimum pool.}
 "$o" objOrd wsList 5049
 "$o" objSlotOrderType ListOrder_COLSORT 0 Ascend
 "$o" sDM {Alternate Hydrologies} {None} {STD}
@@ -11656,6 +11673,7 @@ set s "$o.Pool Elevation Min"
 set s "$o.Pool Elevation Min to Supplement Irrigation"
 "$s" order 25 
 "$s" UUID {fae8421b-e755-4703-9b0e-947ed3bd29b9}
+"$s" userDescript {Pool elevation below which Hickory stops drawing on storage to cover unmet Juniper Irrigation demand. It sits above Pool Elevation Min, so supplementing stops well before the hard minimum.}
 "$s" units 2 {%f} 2
 "$s" value 139.90000000000001 {m}
 "$o" {SeriesSlot} {Outflow Min}
@@ -11679,6 +11697,7 @@ $ws SimObj $obj {StreamGage} 722 289 {} 482 1052 66 336
 "$o" UUID {517d4d85-2e2b-4885-b235-7a7bd6986910}
 "$o" objAttributes { \
 <SimObjAttributes simObjName="Interstate Flow Requirement"/>}
+"$o" userDescript {Gage where the downstream interstate minimum flow is enforced and its violation measured. It holds the requirement itself rather than any physical routing.}
 "$o" objOrd wsList 5095
 "$o" objSlotOrderType ListOrder_DEFAULT 0 Ascend
 "$o" sDM {Conditional Flow} {None} {STD}
@@ -11713,6 +11732,7 @@ set s "$o.Gage Outflow"
 set s "$o.Min Flow"
 "$s" order 4 
 "$s" UUID {46dc90fa-a94b-4124-b50a-3f16e5c5102d}
+"$s" userDescript {Minimum flow that must pass the interstate gage. The policy never requires more than the natural inflow available at Gage Above Hickory, so in a dry period the effective requirement is the inflow itself.}
 "$s" cvg 2 0.0001
 "$s" unit 19 {%f} 2
 "$s" minMax NaN NaN
@@ -11752,6 +11772,7 @@ set s "$o.Min Flow.Periodic Input"
 set s "$o.Min Flow Violation"
 "$s" order 4 
 "$s" UUID {6809b1e6-7d78-47dd-ac87-e95f5ea271de}
+"$s" userDescript {Shortfall against the effective minimum flow, computed each timestep by the Post-processing group. Zero unless the gage outflow falls more than a small tolerance below the requirement.}
 "$s" cvg 2 0.0001
 "$s" unit 19 {%f} 2
 "$s" minMax NaN NaN
@@ -15193,12 +15214,14 @@ $ws SimObj $obj {DataObj} 514 446 {} 337 711 66 298
 "$o" UUID {53e3dd2c-f9e2-4128-8c10-6471858927ac}
 "$o" objAttributes { \
 <SimObjAttributes simObjName="System Data"/>}
+"$o" userDescript {Data object holding basin-wide totals computed by the Post-processing rules: spill volume, depletion shortage, and energy summed across all reservoirs.}
 "$o" objOrd wsList 5269
 "$o" objSlotOrderType ListOrder_COLSORT 0 Ascend
 "$o" {SeriesSlot} {Energy}
 set s "$o.Energy"
 "$s" order 1 
 "$s" UUID {a92108bf-fb96-424e-8aab-9382c64944d4}
+"$s" userDescript {Total generation across every power reservoir plus Mulberry Canal Power for the timestep, summed by the Post-processing group.}
 "$s" cvg 2 0.0001
 "$s" unit 39 {%f} 2
 "$s" minMax NaN NaN
@@ -15273,6 +15296,7 @@ set s "$o.Total Juniper Irrigation"
 set s "$o.Spill Volume"
 "$s" order 5 
 "$s" UUID {9714f642-f398-459c-a155-c4574e1cd9ad}
+"$s" userDescript {Total spill across every reservoir in the basin for the timestep, summed by the Post-processing group.}
 "$s" cvg 2 0.0001
 "$s" unit 10 {%f} 2
 "$s" minMax NaN NaN
@@ -15319,6 +15343,7 @@ set s "$o.Total E Basin Irrig Neg"
 set s "$o.Depletion Shortage"
 "$s" order 11 
 "$s" UUID {aca5a77a-1ce5-4216-b872-d49e7352b359}
+"$s" userDescript {Total depletion shortage across every water user in the basin for the timestep, summed by the Post-processing group.}
 "$s" cvg 2 0.0001
 "$s" unit 10 {%f} 2
 "$s" minMax NaN NaN
@@ -19142,13 +19167,13 @@ $rsm saveLoadedSetWithModel
 $rsm loadedSet {RULESET\
 NAME "Arbor Basin Rules (from MRM run)";\
 AGENDA_ORDER ASCENDING;\
-DESCRIPTION "";\
+DESCRIPTION "Operating policy for the Arbor Basin: hold each reservoir between its elevation limits, operate the west cascade to guide curves and targets, move water east through the transbasin diversion, and balance Juniper Irrigation deliveries against the interstate minimum flow.";\
 PRECISION   2;\
 NOTES "";\
 BEGIN\
 \
   POLICY_GROUP   "Post-processing";\
-  DESCRIPTION    "";\
+  DESCRIPTION    "Reporting rules that run after the policy rules have set flows. They fill the System Data totals and the interstate violation metric, and set no releases.";\
   ACTIVE         TRUE;\
   NOTES          "";\
   BEGIN\
@@ -19211,14 +19236,14 @@ BEGIN\
     UUID "{3b5fec82-df5b-4b11-af97-1d8d0b6b7a38}";;\
 \
     RULE                 "Interstate Flow Requirement Violation";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Measures the shortfall against the interstate minimum flow, where the requirement is capped at the natural inflow available. A small tolerance keeps rounding-level misses from being reported as violations.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
     BEGIN\
 \
       $ "Interstate Flow Requirement.Min Flow Violation" [] := WITH NUMERIC minFlow = "Min"( $ "Interstate Flow Requirement.Min Flow" [], $ "Gage Above Hickory.Gage Inflow" [] ) DO\
-  IF ( $ "Interstate Flow Requirement.Gage Outflow" [] < minFlow - 0.10000000 "cms" )\
+  IF ( $ "Interstate Flow Requirement.Gage Outflow" [] < minFlow - 0.10000000 "cms" COMMENTED_BY "Tolerance band: misses smaller than this are treated as rounding, not violations." )\
   THEN\
    minFlow - $ "Interstate Flow Requirement.Gage Outflow" []\
   ELSE\
@@ -19275,7 +19300,7 @@ BEGIN\
     UUID "{92f65424-877f-4102-823b-c7309763556c}";;\
 \
     RULE                 "Hickory Elevation Min Reduce Diversion";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "When Hickory is below its minimum pool, trims the Hickory Diversion request by the volume needed to get back to that minimum. It reduces the request rather than the release, so downstream deliveries are protected first.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -19293,7 +19318,7 @@ BEGIN\
     UUID "{a2669ea5-90ec-4c43-b7b1-77916a1bd5fc}";;\
 \
     RULE                 "Reduce Hickory Diversion";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "When Juniper Irrigation is short, moves water from the Hickory Diversion request into Hickory's outflow, honoring Juniper's senior rights. It issues a warning so the reallocation is visible in the run log.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -19315,7 +19340,7 @@ BEGIN\
     UUID "{cd4831ad-f8be-4f60-861b-0a2d3f0829b1}";;\
 \
     RULE                 "Supplement Juniper from Hickory Storage";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Draws on Hickory storage to cover whatever Juniper Irrigation is still short, but only down to Pool Elevation Min to Supplement Irrigation. Below that elevation the shortage stands.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -19330,7 +19355,7 @@ BEGIN\
     UUID "{976bee91-aea1-4d80-8a16-4df9d1034453}";;\
 \
     RULE                 "Hickory Pass Natural Flows for Juniper and Interstate";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Sets Hickory's baseline release to the smallest of three limits: the natural inflow, the interstate requirement plus the full Juniper request, and the reservoir's physical release capacity. Later rules in the group adjust it from here.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -19342,7 +19367,7 @@ BEGIN\
     UUID "{1a4cdf1e-6b77-4d92-b595-0867a636e743}";;\
 \
     RULE                 "Interstate Flow Requirement";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Despite the name, this sets no flow requirement directly: it tells the Juniper Diversion how much to bypass, which is what actually delivers the interstate minimum flow downstream.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -19434,7 +19459,7 @@ BEGIN\
     UUID "{3d68bd7f-3313-4b32-bd9e-75f170caf92d}";;\
 \
     RULE                 "Elm Required Spill";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Passes an externally supplied Spill Required value as regulated spill, limited to what Elm can release without drawing below the bottom of its elevation-volume table. Sets nothing on timesteps where no value was input.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -19624,7 +19649,7 @@ BEGIN\
   BEGIN\
 \
     RULE                 "Cedar Available for Diversion";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Publishes how much Cedar can spare for the transbasin diversion: the storage above Diversion Min Elevation plus inflow, less the minimum outflow, and zero whenever the pool is already at or below that elevation.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -19797,7 +19822,7 @@ BEGIN\
     NOTES                "";\
     BEGIN\
 \
-      IF_STATEMENT ($ "Cedar.Diversion Min Elevation" [] < 220.00000000 "m") THEN\
+      IF_STATEMENT ($ "Cedar.Diversion Min Elevation" [] < 220.00000000 "m" COMMENTED_BY "Lower end of the elevation range this model is calibrated for; below it the run is halted rather than allowed to produce misleading results.") THEN\
             STOP_RUN_STATEMENT "Invalid Cedar Diversion Min Elevation";\
 \
       END_IF_STATEMENT;\
@@ -19857,7 +19882,7 @@ BEGIN\
   BEGIN\
 \
     RULE                 " Trace Diversion Schedule Variation";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Perturbs the transbasin diversion request for one trace only, so a multiple-run study can compare a reduced schedule against the baseline. Runs before the simulation starts.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     SET_VALUE_FLAG       64;\
@@ -19866,7 +19891,7 @@ BEGIN\
 \
       IF_STATEMENT ("GetTraceNumber"(  ) == 1.00000000) THEN\
             FOREACH (DATETIME t IN @"Start Timestep" TO @"Finish Timestep") DO\
-            $ "Transbasin Diversion.Diversion Request" [t] := $ "Transbasin Diversion.Diversion Request" [t] * 0.90000000;\
+            $ "Transbasin Diversion.Diversion Request" [t] := $ "Transbasin Diversion.Diversion Request" [t] * 0.90000000 COMMENTED_BY "Trace 1 runs the schedule at 90 percent of the baseline request.";\
 \
       ENDFOREACH;\
 \

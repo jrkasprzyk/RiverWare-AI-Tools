@@ -12,8 +12,15 @@ Usage:
     python explain.py ruleset.rls               # ruleset skeleton
     python explain.py model.mdl ruleset.rls     # both, in one digest
     python explain.py model.mdl --json          # machine-readable
+    python explain.py model.mdl --annotations   # annotation inventory
 
 Order of the two file args does not matter; extension decides which parser runs.
+
+--annotations swaps the narrative digest for an inventory of every place a
+description could go and whether one is already there. It feeds the
+annotate-riverware-model skill's propose step, which must never overwrite an
+existing description. The inventory is advisory: annotate.py re-checks
+occupancy itself before writing a single byte.
 """
 from __future__ import annotations
 
@@ -28,7 +35,7 @@ from pathlib import Path
 def parse_mdl(text: str) -> dict:
     lines = text.splitlines()
     out: dict = {"header": {}, "run": {}, "objects": [], "dmi": {}, "scripts": [],
-                 "rpl_sets": []}
+                 "rpl_sets": [], "description": "", "embedded_rpl": []}
 
     # --- header (first comment lines) + counts + run params ---------------------
     m = re.search(r"^# RiverWare_Model (\S+)", text, re.M)
@@ -45,6 +52,10 @@ def parse_mdl(text: str) -> dict:
     if m:
         out["run"] = {"start": m.group(1), "end": m.group(2),
                       "timestep": f"{m.group(3)} {m.group(4)}"}
+    # model-level description: the line is always present, empty braces when unset
+    m = re.search(r"^\$ws\.Model\.FileInfo comment \{(.*)\}\s*$", text, re.M)
+    if m:
+        out["description"] = _clean(m.group(1))
 
     # --- DMI (parsed out of the embedded Catalog XML blob) ---------------------
     out["dmi"]["exec"] = re.findall(r'<execDmi name="([^"]+)" type="([^"]+)"', text)
@@ -65,6 +76,7 @@ def parse_mdl(text: str) -> dict:
         mtype = re.match(r"\$ws SimObj \$obj \{([^}]+)\}", block[0])
         obj = {"type": mtype.group(1) if mtype else "?", "name": "?",
                "description": "", "methods": [], "slots": [], "tables": []}
+        slot = None  # the slot whose block we are currently inside
         for ln in block:
             m = re.search(r'simObjName="([^"]+)"', ln)
             if m:
@@ -76,14 +88,67 @@ def parse_mdl(text: str) -> dict:
             m = re.match(r'"\$o" sDM \{([^}]*)\} \{([^}]*)\}', ln)
             if m and m.group(2) not in ("None", "No Method", ""):
                 obj["methods"].append({"category": m.group(1), "method": m.group(2)})
-            # slot:  "$o" {SlotType} {SlotName}
+            # slot:  "$o" {SlotType} {SlotName}  -- also closes the previous slot
             m = re.match(r'"\$o" \{(\w+Slot)\} \{([^}]*)\}', ln)
             if m:
-                obj["slots"].append({"type": m.group(1), "name": m.group(2)})
+                slot = {"type": m.group(1), "name": m.group(2), "description": ""}
+                obj["slots"].append(slot)
+                continue
+            # a slot's own description, anywhere in its block
+            m = re.match(r'"\$s" userDescript \{(.*)\}', ln)
+            if m and m.group(1) and slot is not None:
+                slot["description"] = _clean(m.group(1))
         # rule-curve / lookup tables: pull dims + labels for Table/Periodic slots
         obj["tables"] = _extract_tables(block)
         out["objects"].append(obj)
+
+    out["embedded_rpl"] = _extract_embedded_rpl(lines)
     return out
+
+
+def _extract_embedded_rpl(lines: list[str]) -> list[dict]:
+    """Pull the RPL sets serialized inside the .mdl itself.
+
+    Each is a Tcl command whose single brace argument opens with `{RULESET\\`
+    and closes on a line that is exactly `}`:
+
+        $rsm loadedSet {RULESET\\        <- Rule Based Simulation
+        $ws.GlobalRplSetMgr globalFunctionSet {RULESET\\
+        $ws initRules {RULESET\\
+        $resm resmRplSet {RULESET\\
+        ...
+        }
+
+    The set's own name comes from the NAME field inside, not the command --
+    the command only marks where the set begins.
+    """
+    sets: list[dict] = []
+    i = 0
+    while i < len(lines):
+        if not lines[i].rstrip("\\").rstrip().endswith("{RULESET"):
+            i += 1
+            continue
+        start = i
+        end = start + 1
+        while end < len(lines) and lines[end].strip() != "}":
+            end += 1
+        block = lines[start:end]
+        rs = {"name": "?", "description": "", "agenda": "", "groups": []}
+        for ln in block[:8]:
+            s = ln.strip().rstrip("\\").strip()
+            m = re.match(r'NAME\s+"(.*)";?$', s)
+            if m and rs["name"] == "?":
+                rs["name"] = m.group(1)
+            m = re.match(r'AGENDA_ORDER\s+(\w+)', s)
+            if m and not rs["agenda"]:
+                rs["agenda"] = m.group(1)
+            m = re.match(r'DESCRIPTION\s+"(.*)";?$', s)
+            if m and not rs["description"]:
+                rs["description"] = _clean(m.group(1))
+        rs["groups"] = _scan_rpl_groups(block)
+        sets.append(rs)
+        i = end + 1
+    return sets
 
 
 def _extract_tables(block: list[str]) -> list[dict]:
@@ -133,15 +198,27 @@ def parse_rls(text: str) -> dict:
     if m:
         out["precision"] = m.group(1)
 
-    lines = text.splitlines()
+    out["groups"] = _scan_rpl_groups(text.splitlines())
+    return out
+
+
+def _scan_rpl_groups(lines: list[str]) -> list[dict]:
+    """Walk RPL text and pull out its POLICY_GROUP/UTILITY_GROUP -> RULE/FUNCTION tree.
+
+    Shared by the .rls parser and the .mdl embedded-set parser. Embedded RPL
+    lines carry a trailing `\\` continuation and leading indentation; both are
+    handled by matching against the stripped line.
+    """
+    groups: list[dict] = []
     group = None
     for idx, ln in enumerate(lines):
         s = ln.strip()
         m = re.match(r'(POLICY_GROUP|UTILITY_GROUP)\s+"([^"]*)"', s)
         if m:
             group = {"kind": m.group(1), "name": m.group(2), "active": None,
-                     "items": []}
-            out["groups"].append(group)
+                     "description": "", "items": []}
+            group.update(_rpl_header_fields(lines, idx))
+            groups.append(group)
             continue
         if group is not None and group.get("active") is None:
             m = re.match(r'ACTIVE\s+(TRUE|FALSE)', s)
@@ -150,18 +227,35 @@ def parse_rls(text: str) -> dict:
         m = re.match(r'(RULE|FUNCTION)\s+"([^"]*)"', s)
         if m and group is not None:
             item = {"kind": m.group(1), "name": m.group(2), "active": None,
-                    "notes": "", "body": ""}
-            # scan a few lines ahead for this item's ACTIVE flag + NOTES
-            for look in lines[idx + 1: idx + 12]:
-                a = re.match(r'\s*ACTIVE\s+(TRUE|FALSE)', look)
-                if a and item["active"] is None:
-                    item["active"] = (a.group(1) == "TRUE")
-                nn = re.match(r'\s*NOTES\s+"([^"]+)"', look)
-                if nn:
-                    item["notes"] = _clean(nn.group(1))
+                    "description": "", "notes": "", "body": ""}
+            item.update(_rpl_header_fields(lines, idx))
             item["body"] = _rpl_body(lines, idx)
             group["items"].append(item)
-    return out
+    return groups
+
+
+def _rpl_header_fields(lines: list[str], hdr_idx: int) -> dict:
+    """Read the ACTIVE / DESCRIPTION / NOTES fields belonging to one RPL header.
+
+    These sit between the header line and its BEGIN. Stopping at BEGIN matters:
+    a group's own fields are followed, a few lines later, by its first rule's
+    fields, and only the first match of each is the group's own.
+    """
+    got: dict = {}
+    for look in lines[hdr_idx + 1: hdr_idx + 14]:
+        s = look.strip().rstrip("\\").strip()
+        if s == "BEGIN":
+            break
+        m = re.match(r'ACTIVE\s+(TRUE|FALSE)', s)
+        if m and "active" not in got:
+            got["active"] = (m.group(1) == "TRUE")
+        m = re.match(r'DESCRIPTION\s+"(.*)";?$', s)
+        if m and "description" not in got:
+            got["description"] = _clean(m.group(1))
+        m = re.match(r'NOTES\s+"(.*)";?$', s)
+        if m and "notes" not in got:
+            got["notes"] = _clean(m.group(1))
+    return got
 
 
 def _rpl_body(lines: list[str], rule_idx: int) -> str:
@@ -242,6 +336,67 @@ def render_mdl(d: dict) -> str:
     return "\n".join(L)
 
 
+def render_annotations(d: dict) -> str:
+    """Inventory of every description slot in the model and whether it is taken.
+
+    Written for the annotate-riverware-model propose step. Described targets are
+    printed with their text so a proposal never duplicates what a modeler already
+    wrote; empty targets are printed as bare names, because that is all the
+    propose step needs to pick candidates -- and because a large model has
+    thousands of them.
+    """
+    L = ["# ANNOTATION INVENTORY",
+         "Legend: [x] = already described, leave alone (REQ-005).  "
+         "[ ] = empty, available.",
+         ""]
+    tally = {"filled": 0, "empty": 0}
+
+    def mark(filled: bool) -> str:
+        tally["filled" if filled else "empty"] += 1
+        return "[x]" if filled else "[ ]"
+
+    L.append("## Model description")
+    L.append(f"{mark(bool(d['description']))} {d['description'] or '(empty)'}")
+
+    L.append("\n## Objects and slots")
+    for o in d["objects"]:
+        L.append(f"\n### {o['name']}  --  {o['type']}")
+        L.append(f"  {mark(bool(o['description']))} object: "
+                 f"{o['description'] or '(empty)'}")
+        described = [s for s in o["slots"] if s.get("description")]
+        empty = [s for s in o["slots"] if not s.get("description")]
+        for s in described:
+            L.append(f"  {mark(True)} {o['name']}.{s['name']}: {s['description']}")
+        if empty:
+            for s in empty:
+                mark(False)
+            L.append(f"  [ ] {len(empty)} slots with no description: "
+                     + ", ".join(s["name"] for s in empty))
+
+    for rs in d.get("embedded_rpl", []):
+        L.append(f"\n## RPL set: {rs['name']}")
+        L.append(f"  {mark(bool(rs['description']))} set: "
+                 f"{rs['description'] or '(empty)'}")
+        for g in rs["groups"]:
+            L.append(f"\n  {g['kind']} \"{g['name']}\"")
+            L.append(f"    {mark(bool(g.get('description')))} group: "
+                     f"{g.get('description') or '(empty)'}")
+            for it in g["items"]:
+                L.append(f"    {mark(bool(it.get('description')))} "
+                         f"{it['kind']} \"{it['name']}\": "
+                         f"{it.get('description') or '(empty)'}")
+
+    L.append(f"\n## Totals\n- described: {tally['filled']}\n"
+             f"- empty (candidates): {tally['empty']}")
+    L.append("\nTarget paths for the proposal JSON:")
+    L.append("- object_description  -> \"<Object>\"")
+    L.append("- slot_description    -> \"<Object>.<Slot>\"")
+    L.append("- rpl_description     -> \"<Set>/<Group>/<Rule or Function>\""
+             " (drop trailing parts for group- and set-level fields)")
+    L.append("- model_description   -> \"\" (there is only one)")
+    return "\n".join(L)
+
+
 def render_rls(d: dict) -> str:
     L = ["# RULESET SKELETON"]
     L.append(f"- Name: {d['name']}")
@@ -270,6 +425,7 @@ def render_rls(d: dict) -> str:
 def main(argv: list[str]) -> int:
     args = [a for a in argv if not a.startswith("--")]
     as_json = "--json" in argv
+    as_annotations = "--annotations" in argv
     if not args:
         print(__doc__)
         return 1
@@ -283,8 +439,13 @@ def main(argv: list[str]) -> int:
         text = p.read_text(encoding="utf-8", errors="replace")
         if p.suffix.lower() == ".mdl":
             result["model"] = parse_mdl(text)
-            render.append(render_mdl(result["model"]))
+            render.append(render_annotations(result["model"]) if as_annotations
+                          else render_mdl(result["model"]))
         elif p.suffix.lower() == ".rls":
+            if as_annotations:
+                print("error: --annotations applies to .mdl files; a .rls is"
+                      " annotated in RiverWare's RPL editor", file=sys.stderr)
+                return 2
             result["ruleset"] = parse_rls(text)
             render.append(render_rls(result["ruleset"]))
         else:

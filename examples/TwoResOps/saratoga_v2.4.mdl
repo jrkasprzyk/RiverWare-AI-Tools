@@ -889,6 +889,7 @@ set s "$o.Unregulated Spill Capacity Fraction"
 set s "$o.Pool Elevation Max"
 "$s" order 20 
 "$s" UUID {83d9eecd-ca0c-4db0-bf03-95c918d5cd5f}
+"$s" userDescript {Maximum pool elevation. The Prevent Overtopping rule releases down to this level whenever the pool exceeds it.}
 "$s" units 1 {%f} 2
 "$s" value 2175 {m}
 "$o" {TableSlot} {Shortage Table}
@@ -912,6 +913,7 @@ set s "$o.Shortage Table"
 set s "$o.Shortage Fraction"
 "$s" order 27 
 "$s" UUID {15086b41-8baf-4bfb-aa30-3dbecfca4ff9}
+"$s" userDescript {Fraction of the irrigation request withheld this timestep, looked up from the Shortage Table using the previous timestep's pool elevation. Set by Find Shortage Level and consumed by the Irrigation rule.}
 "$s" cvg 2 0.0001
 "$s" unit 49 {%f} 2
 "$s" minMax NaN NaN
@@ -923,24 +925,28 @@ set s "$o.Shortage Fraction"
 set s "$o.Dead Pool"
 "$s" order 28 
 "$s" UUID {e7a32d7a-1725-48a3-aa2b-bbe50f6b9f66}
+"$s" userDescript {Lowest usable pool elevation. At or below it the Shortage Table delivers nothing to the irrigators.}
 "$s" units 1 {%f} 2
 "$s" value 2140 {m}
 "$o" {ScalarSlot} {Level 1 PE}
 set s "$o.Level 1 PE"
 "$s" order 26 
 "$s" UUID {87a78ae5-cec0-4de6-a16d-14442c08770c}
+"$s" userDescript {Pool elevation at which Level 1 irrigation restrictions begin. Copied from the Shortage Table by an initialization rule so that rules and plots can reference it as a scalar.}
 "$s" units 1 {%f} 2
 "$s" value 2154 {m}
 "$o" {ScalarSlot} {Level 2 PE}
 set s "$o.Level 2 PE"
 "$s" order 27 
 "$s" UUID {90a974d6-4b0a-4d66-93fe-651d08579cae}
+"$s" userDescript {Pool elevation at which Level 2 irrigation restrictions begin. Copied from the Shortage Table by an initialization rule; also the floor that the eco-flow supplement rule refuses to draw below.}
 "$s" units 1 {%f} 2
 "$s" value 2144 {m}
 "$o" {ScalarSlot} {Flood Control}
 set s "$o.Flood Control"
 "$s" order 28 
 "$s" UUID {81be433e-4070-4cf5-ad69-22acbea64e77}
+"$s" userDescript {Flood-control pool elevation for Cora. The Flood Control rule draws the pool down to this level, but only during the flood season.}
 "$s" units 1 {%f} 2
 "$s" value 2173 {m}
 "$o" hideSlots 0 hideOff hideEmptyOff
@@ -951,6 +957,7 @@ $ws SimObj $obj {Reach} 152 487 {} 121 290 121 290
 "$o" geospatialCoords 0 0 121 290
 "$o" UUID {447078d3-1677-443e-8ffc-8d50dd24cf82}
 "$o" objAttributes {<SimObjAttributes simObjName="Pescado Fishery"/>}
+"$o" userDescript {Reach immediately below Cora. It carries no diversion; its role in the policy is to hold the Min Fish Flow threshold that Cora's releases must satisfy.}
 "$o" objOrd wsList 5033
 "$o" objSlotOrderType ListOrder_DEFAULT 0 Ascend
 "$o" sDM {Routing} {No Routing} {STD}
@@ -1025,6 +1032,7 @@ set s "$o.Outflow"
 set s "$o.Min Fish Flow"
 "$s" order 4 
 "$s" UUID {9d22a844-7a86-4624-bc38-70239d97891e}
+"$s" userDescript {Minimum instream flow required below Cora. The Minimum Fish Flow rule raises Cora's release to meet it whenever the release would otherwise fall short.}
 "$s" units 8 {%f} 2
 "$s" value 120 {cms}
 "$o" hideSlots 0 hideOff hideEmptyOff
@@ -22323,18 +22331,21 @@ set s "$o.Regulated Spill Capacity Fraction"
 set s "$o.Delivery Threshold"
 "$s" order 19 
 "$s" UUID {87c15022-18bf-4a98-a337-f4ef0597aa7b}
+"$s" userDescript {Pool elevation below which Roberto cannot pass Cora's releases downstream. When the previous timestep is below it, the Irrigation rule delivers nothing to Winifred Valley Farms.}
 "$s" units 1 {%f} 2
 "$s" value 1870 {m}
 "$o" {ScalarSlot} {Flood Control Level}
 set s "$o.Flood Control Level"
 "$s" order 20 
 "$s" UUID {fe4c9643-c269-4df8-9807-2a5df35f43c8}
+"$s" userDescript {Flood-control pool elevation for Roberto and a decision variable in the optimization. The Flood Control rule draws the pool down to this level during the flood season to leave room for a flood wave.}
 "$s" units 1 {%f} 2
 "$s" value 1875 {m}
 "$o" {ScalarSlot} {Pool Elevation Max}
 set s "$o.Pool Elevation Max"
 "$s" order 21 
 "$s" UUID {b2cf8251-817b-43d6-9d9f-b04650237a9e}
+"$s" userDescript {Maximum pool elevation. The Prevent Overtopping rule releases down to this level whenever the pool exceeds it.}
 "$s" units 1 {%f} 2
 "$s" value 1900 {m}
 "$o" hideSlots 0 hideOff hideEmptyOff
@@ -22345,6 +22356,7 @@ $ws SimObj $obj {Reach} 457 174 {} 286 339 286 339
 "$o" geospatialCoords 0 0 286 339
 "$o" UUID {3cd8e51e-9303-44e5-b71d-ef533718907b}
 "$o" objAttributes {<SimObjAttributes simObjName="Winifred Valley Reach"/>}
+"$o" userDescript {Reach between Roberto and Lafayette City. It uses Available Flow Based Diversion to serve Winifred Valley Farms, so the farms can only take what Roberto has already released past it.}
 "$o" objOrd wsList 5037
 "$o" objSlotOrderType ListOrder_DEFAULT 0 Ascend
 "$o" sDM {Routing} {No Routing} {STD}
@@ -22453,6 +22465,7 @@ $ws SimObj $obj {ControlPoint} 704 217 {} 342 463 342 463
 "$o" geospatialCoords 0 0 342 463
 "$o" UUID {6bcf2fae-839a-4b3f-96f7-a8f47d6fbf78}
 "$o" objAttributes {<SimObjAttributes simObjName="Lafayette City"/>}
+"$o" userDescript {Control point representing the downstream city. Its Preferred Flow Limit is the flood-damage decision variable, and its inflow drives the Flood Damage Curve.}
 "$o" objOrd wsList 5038
 "$o" objSlotOrderType ListOrder_DEFAULT 0 Ascend
 "$o" sDM {Local Inflow} {None} {STD}
@@ -22529,6 +22542,7 @@ set s "$o.Routing Coefficients"
 set s "$o.Preferred Flow Limit"
 "$s" order 6 
 "$s" UUID {e820523a-c5c5-4784-bd53-6be0545dc799}
+"$s" userDescript {Flow through the city above which flooding is considered to begin, and a decision variable in the optimization. Note that it is deliberately allowed to differ from where the Flood Damage Curve starts charging damage.}
 "$s" units 8 {%f} 2
 "$s" value 1200 {cms}
 "$o" {TableSlot} {Flood Damage Curve}
@@ -22560,6 +22574,7 @@ $ws SimObj $obj {StreamGage} 1242 114 {} 345 559 345 559
 "$o" geospatialCoords 0 0 345 559
 "$o" UUID {f5e4fc00-073e-4c50-9e40-2f82cb713a50}
 "$o" objAttributes {<SimObjAttributes simObjName="Wildlife Sanctuary"/>}
+"$o" userDescript {Gage below the confluence where the ecological flow requirement is evaluated. Its Eco Flow Pattern is the monthly requirement; Eco Deficit and Eco Provided record how well the requirement was met.}
 "$o" objOrd wsList 5039
 "$o" objSlotOrderType ListOrder_COLSORT 0 Descend
 "$o" sDM {Conditional Flow} {None} {STD}
@@ -22622,6 +22637,7 @@ set s "$o.Eco Flow Pattern"
 set s "$o.Eco Deficit"
 "$s" order 5 
 "$s" UUID {7bb5b650-7448-4e1a-b261-b23ffaa05295}
+"$s" userDescript {Shortfall of gaged flow against the Eco Flow Pattern requirement, computed each timestep by the Post Processing group.}
 "$s" cvg 2 0.0001
 "$s" unit 8 {%f} 2
 "$s" minMax NaN NaN
@@ -22888,6 +22904,7 @@ set s "$o.Roberto Flood Reliability"
 "$s" order 4 
 "$s" UUID {7e6e6d95-3317-409a-8f47-98d24bac8c2a}
 "$s" computedByExpr 3 {"TimeBasedReliability"( $ "Roberto.Pool Elevation", $ "Roberto.Pool Elevation Max" [] - 2.00000000 "m", "<=" )}
+"$s" userDescript {Fraction of timesteps in which Roberto's pool elevation stays at least 2 m below its maximum, so the reservoir is credited only when it holds real freeboard.}
 "$s" units 49 {%f} 2
 "$s" value 0.44454586946599728 {decimal}
 "$o" {ScalarSlot} {Cora Supply Reliability}
@@ -22911,6 +22928,7 @@ set s "$o.Eco Volumetric Reliability"
 "$s" order 8 
 "$s" UUID {cc0c42a6-6d21-4933-afe0-334f057a63f2}
 "$s" computedByExpr 3 {"VolRelGivenTimeseries"( $ "Wildlife Sanctuary.Eco Provided", $ "Wildlife Sanctuary.Eco Flow Pattern" )}
+"$s" userDescript {Volume of ecological flow provided divided by the volume requested by the Eco Flow Pattern, over the whole run.}
 "$s" units 49 {%f} 2
 "$s" value 1 {decimal}
 "$o" {ScalarSlot} {Flood Damage}
@@ -22918,6 +22936,7 @@ set s "$o.Flood Damage"
 "$s" order 6 
 "$s" UUID {34cb535c-ff09-4f71-8365-2910467df9df}
 "$s" computedByExpr 3 {"TotalValueFromFlowrate"( $ "Lafayette City.Flood Damage Curve", $ "Lafayette City.Inflow" )}
+"$s" userDescript {Total flood damage over the run, obtained by running Lafayette City's inflow through its Flood Damage Curve. Calibrate this metric by its spread across policies, not its absolute value.}
 "$s" units 38 {%f} 2
 "$s" value 1905335533.770963 {$}
 "$o" {ScalarSlot} {Fraction of Days Above 1000 cms at City}
@@ -22925,6 +22944,7 @@ set s "$o.Fraction of Days Above 1000 cms at City"
 "$s" order 7 
 "$s" UUID {1c0e105f-0070-46dc-af61-1671760f2e2d}
 "$s" computedByExpr 3 {"TimeBasedReliability"( $ "Lafayette City.Inflow", 1000.00000000 "cms", ">" )}
+"$s" userDescript {Fraction of timesteps with city inflow above 1000 cms. This is a fixed reporting threshold and is independent of the Preferred Flow Limit decision variable.}
 "$s" units 49 {%f} 2
 "$s" value 0.35006846188954815 {decimal}
 "$o" {ScalarSlot} {Cora Minimum Level}
@@ -24248,19 +24268,19 @@ $rsm saveLoadedSetWithModel true
 $rsm loadedSet {RULESET\
 NAME "RPL Set";\
 AGENDA_ORDER ASCENDING;\
-DESCRIPTION "";\
+DESCRIPTION "Operating policy for the Saratoga basin: keep both reservoirs below their maximum elevations, evacuate flood space in season, meet the fish and ecological flow requirements, and deliver irrigation water subject to a pool-elevation-based shortage.";\
 PRECISION   2;\
 NOTES "";\
 BEGIN\
 \
   POLICY_GROUP   "Post Processing";\
-  DESCRIPTION    "";\
+  DESCRIPTION    "Bookkeeping that runs after the policy rules have set flows. It computes reporting quantities and sets no releases.";\
   ACTIVE         TRUE;\
   NOTES          "";\
   BEGIN\
 \
     RULE                 "Wildlife Sanctuary Calculations";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Records how the ecological flow requirement fared this timestep. When flow fell short it stores the shortfall and the amount actually provided; when it did not, it stores the requirement itself, so exceeding the target earns no extra credit in the metrics.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -24306,7 +24326,7 @@ BEGIN\
     UUID "{a540d669-7c32-4c35-a793-9bed503cb27c}";;\
 \
     RULE                 "Avoid City Flooding";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Cuts Roberto's release by exactly the amount by which the city's inflow exceeds its Preferred Flow Limit, subject to what the reservoir can physically hold back.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -24321,7 +24341,7 @@ BEGIN\
     UUID "{a943f237-92b7-4d7c-9a0f-48e9a8f96e89}";;\
 \
     RULE                 "Flood Control";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Draws Roberto down to its Flood Control Level, but only during the flood season defined by FloodSeason. Outside that window the rule sets nothing and the pool is free to fill.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -24351,7 +24371,7 @@ BEGIN\
     UUID "{a879efed-6dbe-4386-89fd-c750eb59942a}";;\
 \
     RULE                 "Pass-Through Flow for Winifred Farms";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Unconditionally sets Roberto's release to the water Cora already sent down for the farms, so the delivery passes through rather than being stored.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -24387,7 +24407,7 @@ BEGIN\
     UUID "{2ef8156d-5604-40e8-9f63-0740e67e08f2}";;\
 \
     RULE                 "Flood Control";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "Draws Cora down to its Flood Control elevation, but only during the flood season defined by FloodSeason. Outside that window the rule sets nothing.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
@@ -24579,7 +24599,7 @@ BEGIN\
     FUNCTION       "FloodSeason" (  )\
     RETURN_TYPE    BOOLEAN;\
     SCALE_UNITS    "";\
-    DESCRIPTION    "";\
+    DESCRIPTION    "True between May 1 and August 31. This is the window in which both reservoirs' Flood Control rules are allowed to draw the pools down.";\
     ACTIVE         TRUE;\
     PRE_EXEC_DIAG  FALSE;\
     POST_EXEC_DIAG FALSE;\

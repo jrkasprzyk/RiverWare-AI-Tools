@@ -15,6 +15,9 @@ tools. It demonstrates AI-assisted workflows that aid in:
   structure and key time series.
 - **Drafting policy rules** — turning a plain-language operating-policy
   request into a pasteable RPL rule.
+- **Annotating models** — proposing descriptions for objects, slots, rules
+  and functions, and comments on RPL expressions, for the modeler to review
+  before they are written into the `.mdl`.
 - **Live model control** — a prototype model context protocol
   ([MCP](https://modelcontextprotocol.io)) server that lets an AI agent set
   inputs, run RiverWare in batch mode, and read results back
@@ -110,13 +113,14 @@ these skills — point it at [AGENTS.md](AGENTS.md).
 | [explain-riverware-model](skills/explain-riverware-model/SKILL.md) | Parse a `.mdl`/`.rls` file and write a narrative explanation of the model | Available |
 | [visualize-riverware-model](skills/visualize-riverware-model/SKILL.md) | Render model structure and key series as a self-contained HTML dashboard | Available |
 | [draft-riverware-rules](skills/draft-riverware-rules/SKILL.md) | Draft a pasteable RPL rule from a plain-language policy request | Available |
+| [annotate-riverware-model](skills/annotate-riverware-model/SKILL.md) | Propose descriptions and RPL comments for a model, then apply the approved set to the `.mdl` | Available |
 
 ## Examples
 
 | Model | Description | Outputs |
 |-------|-------------|---------|
-| [ArborBasin](examples/ArborBasin/) | The CADSWES RiverWare training model | [Narrative](examples/ArborBasin/ArborBasin_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html) · [Rule case study](examples/ArborBasin/ArborBasin_rule_case_study.md) |
-| [TwoResOps](examples/TwoResOps/) | Saratoga, a two-reservoir operations testbed | [Narrative](examples/TwoResOps/saratoga_v2.4_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/TwoResOps/saratoga_v2.4_dashboard.html) · [Rule case study](examples/TwoResOps/saratoga_v2.4_rule_case_study.md) |
+| [ArborBasin](examples/ArborBasin/) | The CADSWES RiverWare training model | [Narrative](examples/ArborBasin/ArborBasin_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html) · [Rule case study](examples/ArborBasin/ArborBasin_rule_case_study.md) · [Annotation review](examples/ArborBasin/ArborBasin_annotations.md) |
+| [TwoResOps](examples/TwoResOps/) | Saratoga, a two-reservoir operations testbed | [Narrative](examples/TwoResOps/saratoga_v2.4_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/TwoResOps/saratoga_v2.4_dashboard.html) · [Rule case study](examples/TwoResOps/saratoga_v2.4_rule_case_study.md) · [Annotation review](examples/TwoResOps/saratoga_v2.4_annotations.md) |
 
 All examples are also browsable from the
 [GitHub Pages site](https://jrkasprzyk.github.io/RiverWare-AI-Tools/).
@@ -140,6 +144,9 @@ with these tools.
 
 - [ ] Verified GitHub Copilot walkthrough
 - [ ] Editing example model descriptions and fine-tuning skills
+- [ ] Verify the annotated example models load cleanly in RiverWare
+- [ ] Widen `COMMENTED_BY` targeting beyond numeric literals, and encode
+      quotes in RPL description text as `&quot;` rather than rejecting them
 
 # Contributing
 

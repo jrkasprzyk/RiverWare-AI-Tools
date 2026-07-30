@@ -9,14 +9,18 @@ skills/                      One folder per skill: SKILL.md + helper scripts
   explain-riverware-model/   Narrative explanation of .mdl/.rls files
   visualize-riverware-model/ Self-contained interactive HTML dashboard
   draft-riverware-rules/     Draft a pasteable RPL policy rule
+  annotate-riverware-model/  Propose + apply model descriptions and comments
 examples/                    RiverWare models + committed skill outputs
   ArborBasin/                CADSWES training model
   TwoResOps/                 Two-reservoir operations model (saratoga)
 prototypes/                  Experimental integrations (MCP server)
+tests/                       Parser and applier regression tests
 docs/                        Integration documentation
 .claude-plugin/              Claude Code plugin + marketplace manifests
 .claude/skills/              Thin bridges so cloned repos expose the skills
 ```
+
+Run the tests from the repo root with `python -m unittest discover -s tests`.
 
 ## The one hard rule: never read a `.mdl` raw
 
@@ -30,8 +34,10 @@ python skills/explain-riverware-model/explain.py examples/ArborBasin/ArborBasin.
 
 This emits a structural digest (~500 lines): objects, slots, selected
 methods, rule-curve tables, DMIs, and embedded RPL rulesets. Add `--json`
-for machine-readable output. Read narrow line ranges of the raw file only
-to verify a specific block the digest summarized.
+for machine-readable output, or `--annotations` for an inventory of every
+description field and whether one is already written. Read narrow line
+ranges of the raw file only to verify a specific block the digest
+summarized.
 
 ## Using the skills
 
@@ -43,6 +49,9 @@ Each skill is self-documenting — read its `SKILL.md` and follow it:
   self-contained HTML dashboard (schematic, lookup tables, key series).
 - `skills/draft-riverware-rules/SKILL.md` — draft a pasteable RPL rule from
   a plain-language policy request, and say where it belongs in the agenda.
+- `skills/annotate-riverware-model/SKILL.md` — propose descriptions and RPL
+  comments for a model, then apply the approved set to the `.mdl`. Never
+  writes to a model without a review artifact and the user's approval.
 
 Skills follow a common pattern: a Python parser (3.10+, stdlib) extracts a
 digest; the SKILL.md tells you how to turn the digest into the deliverable;

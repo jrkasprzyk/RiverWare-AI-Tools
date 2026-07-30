@@ -1,0 +1,138 @@
+# RiverWare_Model 9.7 Release
+# Created 09:00 January 1, 2026
+ModelSimObjCount 2
+$ws.Model.FileInfo saveInfo 1 {tester} {01-01-2026 09:00:00} {RiverWare 9.7}
+$ws.Model.FileInfo comment {}
+$ws.runInfo runParam {01-01-2026 24:00} {12-31-2026 24:00} 1 DAY
+# Section: Simulation Objects
+Section {Simulation Objects}
+set obj {Cora}
+set o "$ws.Cora"
+$ws SimObj $obj {StorageReservoir} 77 568 {} 50 335 50 335
+"$o" webMapCoords 173 391
+"$o" UUID {4ff34611-058c-439d-8519-2318042fbcd6}
+"$o" objAttributes {<SimObjAttributes simObjName="Cora"/>}
+"$o" objOrd wsList 5032
+"$o" sDM {Spill} {Unregulated} {STD}
+"$o" {SeriesSlot} {Inflow}
+set s "$o.Inflow"
+"$s" order 1
+"$s" UUID {83d9eecd-ca0c-4db0-bf03-95c918d5cd5f}
+"$s" units 1 {%f} 2
+"$o" {TableSlot} {Max Release}
+set s "$o.Max Release"
+"$s" order 2
+"$s" UUID {7be8848f-66ce-4219-9c4c-0ffea4d5c71f}
+"$s" userDescript {Hand-written by the modeler; must survive untouched.}
+"$s" resize 2 2
+"$s" setColumnLabels {Pool Elevation} {Discharge}
+"$o" {ScalarSlot} {Supply Reliability}
+set s "$o.Supply Reliability"
+"$s" order 3
+"$s" UUID {79a5e9d5-388a-4e37-beb5-ab460642f64f}
+"$s" computedByExpr 3 {"TimeBasedReliability"( $ "Cora.Pool Elevation", 2160.00000000 "m", ">=" )}
+"$s" units 49 {%f} 2
+"$s" value 0.5 {decimal}
+"$o" {ScalarSlot} {Dead Pool}
+set s "$o.Dead Pool"
+"$s" units 1 {%f} 2
+"$s" value 2140 {m}
+set obj {Roberto}
+set o "$ws.Roberto"
+$ws SimObj $obj {StorageReservoir} 78 569 {} 51 336 51 336
+"$o" webMapCoords 174 392
+"$o" UUID {a1b2c3d4-0000-0000-0000-000000000001}
+"$o" objAttributes {<SimObjAttributes simObjName="Roberto"/>}
+"$o" userDescript {Downstream reservoir, described already by the modeler.}
+"$o" objOrd wsList 5033
+"$o" {SeriesSlot} {Outflow}
+set s "$o.Outflow"
+"$s" order 1
+"$s" UUID {a1b2c3d4-0000-0000-0000-000000000002}
+"$s" units 1 {%f} 2
+set obj {Hickory}
+set o "$ws.Hickory"
+$ws SimObj $obj {StorageReservoir} 79 570 {} 52 337 52 337
+"$o" webMapCoords 175 393
+"$o" UUID {a1b2c3d4-0000-0000-0000-000000000003}
+"$o" objAttributes { \
+<SimObjAttributes simObjName="Hickory"> \
+ <SimObjAttribute name="Fed or NonFed" value="Nonfederal"/> \
+ <SimObjAttribute name="PUD" value="Douglas"/> \
+</SimObjAttributes>}
+"$o" objOrd wsList 5034
+"$o" {SeriesSlot} {Outflow}
+set s "$o.Outflow"
+"$s" order 1
+"$s" UUID {a1b2c3d4-0000-0000-0000-000000000004}
+"$s" units 1 {%f} 2
+# Section: Rulesets
+Section {Rulesets}
+set rsm "$ws.RulebasedSimulationController"
+$rsm loadedSet {RULESET\
+NAME "Mini Set";\
+AGENDA_ORDER ASCENDING;\
+DESCRIPTION "";\
+PRECISION   2;\
+NOTES "";\
+BEGIN\
+\
+  POLICY_GROUP   "Cora Rules";\
+  DESCRIPTION    "";\
+  ACTIVE         TRUE;\
+  NOTES          "";\
+  BEGIN\
+\
+    RULE                 "Flood Control";\
+    DESCRIPTION          "";\
+    ACTIVE               TRUE;\
+    RULE_EXEC_CONSTRAINT TRUE;\
+    NOTES                "";\
+    BEGIN\
+\
+      $ "Cora.Outflow" [] := "Max"( $ "Cora.Inflow" [], 0.00000000 "cms" );\
+\
+    END\
+    UUID "{11111111-0000-0000-0000-000000000001}";;\
+\
+    RULE                 "Minimum Fish Flow";\
+    DESCRIPTION          "Already described by the modeler.";\
+    ACTIVE               TRUE;\
+    RULE_EXEC_CONSTRAINT TRUE;\
+    NOTES                "";\
+    BEGIN\
+\
+      $ "Cora.Outflow" [] := 12.00000000 "cms" COMMENTED_BY "Existing comment";\
+\
+    END\
+    UUID "{11111111-0000-0000-0000-000000000002}";;\
+\
+  END\
+  UUID "{11111111-0000-0000-0000-000000000003}";;\
+\
+  POLICY_GROUP   "Roberto Rules";\
+  DESCRIPTION    "";\
+  ACTIVE         TRUE;\
+  NOTES          "";\
+  BEGIN\
+\
+    RULE                 "Flood Control";\
+    DESCRIPTION          "";\
+    ACTIVE               TRUE;\
+    RULE_EXEC_CONSTRAINT TRUE;\
+    NOTES                "";\
+    BEGIN\
+\
+      $ "Roberto.Outflow" [] := 5.00000000 "cms";\
+\
+    END\
+    UUID "{22222222-0000-0000-0000-000000000001}";;\
+\
+  END\
+  UUID "{22222222-0000-0000-0000-000000000002}";;\
+\
+END\
+UUID "{33333333-0000-0000-0000-000000000001}";\
+}
+# Section: Done
+Section {Done}
