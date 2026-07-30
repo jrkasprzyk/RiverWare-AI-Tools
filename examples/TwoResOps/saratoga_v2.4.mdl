@@ -1,5 +1,5 @@
 # RiverWare_Model 9.7 Release
-# Created 18:06 July 14, 2026
+# Created 12:26 July 30, 2026
 # CADSWES, University of Colorado at Boulder, http://cadswes.colorado.edu/
 # 
 # The catalog command is parsed by RiverWare and RiverSMART:
@@ -9,7 +9,7 @@
 Catalog {\
 <Catalog>\
  <SimWorkspace><ModelLockSet value="0"></ModelLockSet>\
-  <AutoSave notifyType="none" saveDir="." saveInterval="15" saveModelFile="0" saveOutputs="0"></AutoSave>\
+  <AutoSave notifyType="none" saveDir="./" saveInterval="15" saveModelFile="0" saveOutputs="0"></AutoSave>\
  </SimWorkspace>\
  <DiagMgr infoDiag="0"></DiagMgr>\
  <MRMControl><mrmCfgList></mrmCfgList>\
@@ -41,12 +41,12 @@ ModelAccountCount  0
 ModelSupplyCount   0
 ModelExchangeCount 0
 DST 0
-$ws.Model.FileInfo saveInfo 1 {user} {07-14-2026 18:06:56} {RiverWare 9.7} 
-$ws.Model.FileInfo comment {}
+$ws.Model.FileInfo saveInfo 1 {joka0958} {07-30-2026 12:26:50} {RiverWare 9.7} 
+$ws.Model.FileInfo comment {Saratoga is a two-reservoir river basin. There are two storage reservoirs (Cora upstream, Roberto downstream). There is one water user, and flow requirements at Pescado Fishery downstream of Cora, and Lafayette City downstream of Roberto. }
 $ws.Model.RunHistoryParam MaxModelRunHistoryRecs 1
 $ws.Model.RunHistoryRecord 1 0 {RiverWare 9.7} {user} \
  {Rulebased Simulation} {07-14-2026 17:38:15} {07-14-2026 17:38:16} {Finished}
-$ws.AutoSave 1 0 0 15 {.} none
+$ws.AutoSave 1 0 0 15 {./} none
 $ws.StringMgr 1 {\
 <stringMgr name="" size="256"/>\
 }
@@ -60,7 +60,7 @@ ObjectListWidth 256
 WsObjListOrderMode SORT_BY_NAME
 LockedIcons 0
 SelWindowIcon {RwIconStandard}
-WorkspaceSize 6615 6560
+WorkspaceSize 6630 6570
 AccountingSize 6450 6450
 GeospatialSize 6450 6450
 WebMapSize 1000 1000
@@ -71,7 +71,7 @@ CurrCanvasType SIMULATION
 InitCanvasSpec SIMULATION {\
 <InitialViewSpec CanvId="SIMULATION" LocType="LocType_LastSave">\
  <Zoom factor="0.80000000000000004"/>\
- <CenterPos x="648.125" y="6101.875"/>\
+ <CenterPos x="661.875" y="6023.125"/>\
  <WorkspaceInitDateTime ena="0" symbolicDT="24:00 December 31, 1799"/>\
 </InitialViewSpec>}
 WaterYearStartMonthIndex 9 YearNamedFromEnd
@@ -482,6 +482,7 @@ $ws SimObj $obj {StorageReservoir} 77 568 {} 50 335 50 335
 "$o" geospatialCoords 0 0 50 335
 "$o" UUID {4ff34611-058c-439d-8519-2318042fbcd6}
 "$o" objAttributes {<SimObjAttributes simObjName="Cora"/>}
+"$o" userDescript {Cora is the upstream Storage Reservoir. Its inflow comes from the Sara stream gage. It is the sole source for the downstream irrigators, with the water passing through downstream Roberto reservoir along its way.}
 "$o" objOrd wsList 5032
 "$o" objSlotOrderType ListOrder_DEFAULT 0 Ascend
 "$o" sDM {Alternate Hydrologies} {None} {STD}
@@ -894,6 +895,7 @@ set s "$o.Pool Elevation Max"
 set s "$o.Shortage Table"
 "$s" order 26 
 "$s" UUID {a7b33c07-7e8a-4e0f-b406-b749990deeae}
+"$s" userDescript {Pool Elevation determines shortages imposed on the irrigators. Pool Elevations are arranged in descending order, with shortages in ascending order. In other words, the highest elevation has no shortages, lower elevations impose larger shortages, and the irrigators get no water if Cora is at dead pool.}
 "$s" resize 4 2
 "$s" setRowLabels {No Restrictions} {Level 1 Restrictions} {Level 2 Restrictions} {Dead Pool} 
 "$s" setColumnLabels {Pool Elevation} {Shortage Fraction} 
@@ -1120,6 +1122,7 @@ $ws SimObj $obj {StorageReservoir} 409 322 {} 235 216 235 216
 "$o" geospatialCoords 0 0 235 216
 "$o" UUID {49d01a12-6b4c-4d93-9ae7-77ac337b592c}
 "$o" objAttributes {<SimObjAttributes simObjName="Roberto"/>}
+"$o" userDescript {Roberto is the downstream Storage Reservoir. One of its jobs is to pass the water released from Cora to the irrigators downstream. If Roberto's pool elevation is below Delivery Threshold, though, these releases cannot happen. Roberto's Flood Control Level is a decision variable; Roberto releases water when able, during Flood Season, to leave space for flood waves.}
 "$o" objOrd wsList 5036
 "$o" objSlotOrderType ListOrder_DEFAULT 0 Ascend
 "$o" sDM {Alternate Hydrologies} {None} {STD}
@@ -22648,6 +22651,7 @@ $ws SimObj $obj {WaterUser} 685 359 {} 236 475 236 475
 "$o" geospatialCoords 0 0 236 475
 "$o" UUID {70dc14f6-78f9-49e3-a33e-4837c98e7810}
 "$o" objAttributes {<SimObjAttributes simObjName="Winifred Valley Farms"/>}
+"$o" userDescript {Winifred Valley Reach sits below Roberto and directly upstream of Lafayette City. It uses Available Flow Based Diversion to serve Winifred Valley Farms, an irrigator. The farms' return flow is returned downstream of the city, at the node Sara below Lafayette.}
 "$o" objOrd wsList 5040
 "$o" objSlotOrderType ListOrder_DEFAULT 0 Ascend
 "$o" sDM {LinkStructureMirrorCategory} {No Structure} {STD}
@@ -22876,6 +22880,7 @@ $ws SimObj $obj {DataObj} 154 256 {} 149 343 149 343
 "$o" geospatialCoords 0 0 149 343
 "$o" UUID {5128a7e4-0551-4b04-9b9e-75c1da239337}
 "$o" objAttributes {<SimObjAttributes simObjName="Objectives"/>}
+"$o" userDescript {Data object that contains performance metrics, which can contribute to Objectives, Constraints, and/or Metrics for Borg-RiverWare.}
 "$o" objOrd wsList 5042
 "$o" objSlotOrderType ListOrder_OBJECT 0 Ascend
 "$o" {ScalarSlot} {Roberto Flood Reliability}
@@ -22890,6 +22895,7 @@ set s "$o.Cora Supply Reliability"
 "$s" order 0 
 "$s" UUID {79a5e9d5-388a-4e37-beb5-ab460642f64f}
 "$s" computedByExpr 3 {"TimeBasedReliability"( $ "Cora.Pool Elevation", 2160.00000000 "m", ">=" )}
+"$s" userDescript {The ratio of timesteps in which Cora's pool elevation is greater than or equal to a threshold elevation.}
 "$s" units 49 {%f} 2
 "$s" value 0.00091282519397535371 {decimal}
 "$o" {ScalarSlot} {Irrigation Volumetric Reliability}
@@ -22897,6 +22903,7 @@ set s "$o.Irrigation Volumetric Reliability"
 "$s" order 5 
 "$s" UUID {81d8bba6-5c29-46d8-9a96-70ea30aa75ee}
 "$s" computedByExpr 3 {"VolRelGivenTimeseries"( $ "Winifred Valley Farms.Diversion", $ "Winifred Valley Farms.Diversion Requested" )}
+"$s" userDescript {The ratio of the total volume actually diverted to the total amount requested.}
 "$s" units 49 {%f} 2
 "$s" value 0.48243879266242912 {decimal}
 "$o" {ScalarSlot} {Eco Volumetric Reliability}
@@ -24450,7 +24457,7 @@ BEGIN\
     UUID "{2d9b0d00-586a-4730-87bb-0c34dc4196f2}";;\
 \
     RULE                 "Find Shortage Level";\
-    DESCRIPTION          "";\
+    DESCRIPTION          "This sets the Shortage Fraction[] variable only; no release is set at this point.";\
     ACTIVE               TRUE;\
     RULE_EXEC_CONSTRAINT TRUE;\
     NOTES                "";\
