@@ -114,6 +114,7 @@ these skills — point it at [AGENTS.md](AGENTS.md).
 | [visualize-riverware-model](skills/visualize-riverware-model/SKILL.md) | Render model structure and key series as a self-contained HTML dashboard | Available |
 | [draft-riverware-rules](skills/draft-riverware-rules/SKILL.md) | Draft a pasteable RPL rule from a plain-language policy request | Available |
 | [annotate-riverware-model](skills/annotate-riverware-model/SKILL.md) | Propose descriptions and RPL comments for a model, then apply the approved set to the `.mdl` | Available |
+| [riverware-help](skills/riverware-help/SKILL.md) | Interactive RiverWare help — answers grounded in the CADSWES CurrentVersion online help, with cited pages and model-aware context | Available |
 
 ## Examples
 
