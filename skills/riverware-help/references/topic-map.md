@@ -20,3 +20,5 @@ Rules for adding entries (see SKILL.md):
 | Control File Executable DMI — control file syntax | `DMI/DMI_ControlExecutable.3.3.html` | Line format `object.slot: file=... keyword=value`, object/slot/wildcard specs `#ww1031294`, file-name %-directives (%o %s %t %tempdir) `#ww999973`, keyword reference |
 | About the Trace Directory DMI | `DMI/DMI_TraceDirectory.4.2.html` | Trace-numbered subdirectory layout (`trace1/`, ...), auto-generated per-slot filenames, no executable |
 | Trace Directory DMI Editor dialog | `DMI/DMI_TraceDirectory.4.3.html` | Dialog reference |
+| RPL Palette — slot subscript forms | `RPL/RPLTypesPalette.4.3.html` | Valid bracket indices per slot type: series `[datetime]` or `[]`; table `[row, col]` zero-based numeric or label string; aggregate/periodic `[date, col]` |
+| Types of Slots | `UI/UI_SlotDialogs.08.05.html` | All slot types w/ anchors: Table Series Slot `#ww1072573` (method-internal only — cannot be created as custom slot), Periodic `#ww1072580`, Table `#ww1071921`, Series `#ww1070932` |
