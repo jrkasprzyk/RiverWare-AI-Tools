@@ -29,12 +29,16 @@
 # ---------------------------------------------------------------------------
 set -eu
 
-PATTERNS='joka0958|BorgRWProblems|NorthSouth[0-9]{6,}|scratchpad[/\\]|C:[/\\]'
+# The author's OS username is deliberately NOT a pattern: RiverWare stamps it
+# into the FileInfo line of every saved .mdl, so it would re-fire on each
+# example-model save. It is treated as public.
+PATTERNS='BorgRWProblems|NorthSouth[0-9]{6,}|scratchpad[/\\]|C:[/\\]'
 
 # -I skips binary files: .pyc bytecode embeds the build machine's absolute
 # paths and would otherwise trip the C:\ pattern after any local test run.
 hits=$(grep -rniEI "$PATTERNS" \
         --exclude-dir=.git \
+        --exclude-dir=.private \
         --exclude-dir=__pycache__ \
         --exclude-dir=.venv \
         --exclude-dir=node_modules \
