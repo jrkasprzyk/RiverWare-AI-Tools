@@ -116,6 +116,7 @@ these skills — point it at [AGENTS.md](AGENTS.md).
 | [annotate-riverware-model](skills/annotate-riverware-model/SKILL.md) | Propose descriptions and RPL comments for a model, then apply the approved set to the `.mdl` | Available |
 | [riverware-help](skills/riverware-help/SKILL.md) | Interactive RiverWare help — answers grounded in the CADSWES CurrentVersion online help, with cited pages and model-aware context | Available |
 | [comment-cleanup](skills/comment-cleanup/SKILL.md) | Strip changelog-style and repeated comments from AI-written code, document every tuning parameter with its range, default and units, and write the result in Simplified Technical English | Available |
+| [report-cleanup](skills/report-cleanup/SKILL.md) | Rewrite a rambling bug report or issue into Summary/Repro/Hypothesis/Asks, using RiverWare vocabulary to tell an observed symptom from the writer's own guess | Available |
 
 ## Examples
 

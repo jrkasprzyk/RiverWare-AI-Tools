@@ -11,6 +11,7 @@ skills/                      One folder per skill: SKILL.md + helper scripts
   draft-riverware-rules/     Draft a pasteable RPL policy rule
   annotate-riverware-model/  Propose + apply model descriptions and comments
   comment-cleanup/           Comment hygiene for source code (language-agnostic)
+  report-cleanup/            Rewrite rambling bug reports into structured write-ups
 examples/                    RiverWare models + committed skill outputs
   ArborBasin/                CADSWES training model
   TwoResOps/                 Two-reservoir operations model (saratoga)
@@ -58,6 +59,11 @@ Each skill is self-documenting — read its `SKILL.md` and follow it:
   documented with range, default, units and effect, and all comments written
   in Simplified Technical English. These rules apply to any code written in
   this repository, not only when the skill is invoked.
+- `skills/report-cleanup/SKILL.md` — rewrite a rambling bug report or issue
+  into Summary/Repro/Hypothesis/Asks, relabeling the writer's own guess as an
+  unconfirmed hypothesis instead of promoting it to fact. Uses RiverWare
+  vocabulary (Object.Slot references, RPL rule names, Rule Log, DMI, agenda
+  order) to tell an observed symptom from a suspected cause.
 
 Skills follow a common pattern: a Python parser (3.10+, stdlib) extracts a
 digest; the SKILL.md tells you how to turn the digest into the deliverable;
