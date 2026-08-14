@@ -54,6 +54,10 @@ Each skill is self-documenting — read its `SKILL.md` and follow it:
 - `skills/annotate-riverware-model/SKILL.md` — propose descriptions and RPL
   comments for a model, then apply the approved set to the `.mdl`. Never
   writes to a model without a review artifact and the user's approval.
+- `skills/riverware-help/SKILL.md` — answer a RiverWare usage, RPL, DMI, SCT,
+  accounting or optimization question from the CADSWES CurrentVersion online
+  help, citing the exact page. For a question about the user's own model,
+  ground the answer in the digest as well.
 - `skills/comment-cleanup/SKILL.md` — comment hygiene for source code, not
   models: no change history in comments, few comments, every tuning parameter
   documented with range, default, units and effect, and all comments written
