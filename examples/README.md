@@ -26,12 +26,17 @@ worked example of each, grounded in the models above.
 | Session | Skill | What it shows |
 |---------|-------|---------------|
 | [Elevation lookup in a rule](sessions/riverware-help_elevation-lookup.md) | [riverware-help](../skills/riverware-help/SKILL.md) | A cited `ElevationToStorage` answer from the live CADSWES help, checked against what Saratoga's `Cora` actually has — including a sibling function that would abort the run on that object |
+| [Why is my rule overwritten?](sessions/riverware-help_rule-overwrite.md) | [riverware-help](../skills/riverware-help/SKILL.md) | A "why is my model doing this" answer: rule priorities, the R flag, and the overwrite table from the live help, mapped onto Saratoga's actual `Roberto Rules` agenda |
+| [DMI control-file syntax](sessions/riverware-help_dmi-control-file.md) | [riverware-help](../skills/riverware-help/SKILL.md) | Control-file line format and %-directives from the live help for Saratoga's `to_rw` input DMI — including a wildcard that would wrongly match a computed gage |
+| [Minimum-flow rule, request to draft](sessions/draft-riverware-rules_roberto-min-flow.md) | [draft-riverware-rules](../skills/draft-riverware-rules/SKILL.md) | The conversation shape of a drafting session: digest first, an honest refusal to invent a missing threshold slot, a draft mirroring the model's own idiom, and placement stated as a policy tradeoff |
 | [Comment cleanup, before and after](sessions/comment-cleanup_before-after.md) | [comment-cleanup](../skills/comment-cleanup/SKILL.md) | An AI-written post-processing script losing 11 history-and-restatement comments and gaining documented ranges, defaults, and units for three tuning constants |
 | [Report cleanup, before and after](sessions/report-cleanup_before-after.md) | [report-cleanup](../skills/report-cleanup/SKILL.md) | A one-paragraph Saratoga bug report split into Summary / Repro / Hypothesis / four numbered Asks, with the writer's guess kept but relabeled |
 
-The help session's answer was fetched live and the report session's hypothesis
-was checked against the Saratoga digest; the comment-cleanup input is a
-constructed script, labeled as such in the file.
+The help sessions' cited content was fetched live and the report session's
+hypothesis was checked against the Saratoga digest; the comment-cleanup input
+is a constructed script, and the questions/requests in the help and drafting
+sessions are constructed for the examples — each file labels what is
+constructed and what is real.
 
 ## Which skill produced what
 
@@ -42,6 +47,7 @@ constructed script, labeled as such in the file.
 | `*_rule_case_study.md` | [draft-riverware-rules](../skills/draft-riverware-rules/SKILL.md) | Digest the model, then draft per the SKILL.md |
 | `*_annotations.md` / `.json` | [annotate-riverware-model](../skills/annotate-riverware-model/SKILL.md) | Propose per the SKILL.md, then `python skills/annotate-riverware-model/annotate.py <model.mdl> <annotations.json>` |
 | `sessions/riverware-help_*.md` | [riverware-help](../skills/riverware-help/SKILL.md) | Ask the question; the skill fetches and cites the help |
+| `sessions/draft-riverware-rules_*.md` | [draft-riverware-rules](../skills/draft-riverware-rules/SKILL.md) | State the policy request; the skill digests, drafts, and places |
 | `sessions/comment-cleanup_*.md` | [comment-cleanup](../skills/comment-cleanup/SKILL.md) | Point the skill at the files or the working diff |
 | `sessions/report-cleanup_*.md` | [report-cleanup](../skills/report-cleanup/SKILL.md) | Paste the report; the skill restructures it |
 

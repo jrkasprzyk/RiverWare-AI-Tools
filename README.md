@@ -125,14 +125,20 @@ these skills — point it at [AGENTS.md](AGENTS.md).
 | [ArborBasin](examples/ArborBasin/) | The CADSWES RiverWare training model | [Narrative](examples/ArborBasin/ArborBasin_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html) · [Rule case study](examples/ArborBasin/ArborBasin_rule_case_study.md) · [Annotation review](examples/ArborBasin/ArborBasin_annotations.md) |
 | [TwoResOps](examples/TwoResOps/) | Saratoga, a two-reservoir operations testbed | [Narrative](examples/TwoResOps/saratoga_v2.4_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/TwoResOps/saratoga_v2.4_dashboard.html) · [Rule case study](examples/TwoResOps/saratoga_v2.4_rule_case_study.md) · [Annotation review](examples/TwoResOps/saratoga_v2.4_annotations.md) |
 
-The three skills that act on text rather than on a `.mdl` have worked sessions
-in [examples/sessions/](examples/sessions/):
+Worked sessions in [examples/sessions/](examples/sessions/) show the skills
+that answer, draft, or rewrite rather than produce a per-model artifact:
 
 | Session | Skill |
 |---------|-------|
 | [Elevation lookup in a rule](examples/sessions/riverware-help_elevation-lookup.md) — a cited help answer checked against Saratoga's own objects | riverware-help |
+| [Why is my rule overwritten?](examples/sessions/riverware-help_rule-overwrite.md) — rule priorities and the R flag, mapped onto a real agenda | riverware-help |
+| [DMI control-file syntax](examples/sessions/riverware-help_dmi-control-file.md) — line format and %-directives, plus a model-specific wildcard trap | riverware-help |
+| [Minimum-flow rule, request to draft](examples/sessions/draft-riverware-rules_roberto-min-flow.md) — a drafting conversation, including the refusal to invent a missing slot | draft-riverware-rules |
 | [Comment cleanup, before and after](examples/sessions/comment-cleanup_before-after.md) — history comments out, tuning ranges and units in | comment-cleanup |
 | [Report cleanup, before and after](examples/sessions/report-cleanup_before-after.md) — one rambling paragraph into Summary, Repro, Hypothesis, Asks | report-cleanup |
+
+Presenting the repo? [docs/user-group-demo-script.md](docs/user-group-demo-script.md)
+is a reproducible run-of-show for the four model-facing skills.
 
 All examples are also browsable from the
 [GitHub Pages site](https://jrkasprzyk.github.io/RiverWare-AI-Tools/).
