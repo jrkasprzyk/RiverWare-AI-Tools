@@ -3,31 +3,28 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Status](https://img.shields.io/badge/status-early%20development-orange)
 
-**A public demonstration of how AI tools can interface with
+**A exploratory demonstration of how AI tools can interface with
 [RiverWare](https://riverware.org).**
 
-This repository is written for RiverWare modelers who are new to AI coding
-tools. It demonstrates AI-assisted workflows that aid in:
+This is an experimental repository created by Joseph Kasprzyk, to demonstrate how tools like Claude Code can aid in RiverWare modeling workflows. This is not included directly in any CADSWES software and is intended for demonstration purposes.
+
+Demos include:
 
 - **Understanding model files** — AI agents that parse `.mdl` and `.rls`
   files and write plain-language narrative explanations of a model.
 - **Visualizing models** — self-contained HTML dashboards of model
   structure and key time series.
 - **Drafting policy rules** — turning a plain-language operating-policy
-  request into a pasteable RPL rule.
+  request into RPL rule logic.
 - **Annotating models** — proposing descriptions for objects, slots, rules
   and functions, and comments on RPL expressions, for the modeler to review
-  before they are written into the `.mdl`.
+  before they are written into the `.mdl` file.
 - **Live model control** — a prototype model context protocol
   ([MCP](https://modelcontextprotocol.io)) server that lets an AI agent set
   inputs, run RiverWare in batch mode, and read results back
   *(in development)*.
 
-These tools are based on experimental tools developed for other RiverWare applications. Two example models are included here to demonstrate how the tools can be used, but the goal was to create tools for any RiverWare application.
-
-> This repository is under active construction. The
-> [upcoming work](#upcoming-work) section below tracks what is done and what
-> is coming.
+Two example models are included here to demonstrate how the tools can be used, but the goal was to create tools for any RiverWare application.
 
 # Quick start
 
@@ -77,7 +74,7 @@ version you have, run `/plugin` and look at the installed plugin list, or run
 
 **Option B — clone the entire repository**:
 
-If you would like access to the example RiverWare models and data, the best approach is to clone this repository:
+Cloning the repository allows you to get access to the example RiverWare models and data. You can also propose PRs and contribute the project if you'd like. To clone:
 
 ```bash
 git clone https://github.com/jrkasprzyk/RiverWare-AI-Tools.git
