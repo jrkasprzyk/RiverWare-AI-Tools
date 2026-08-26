@@ -101,6 +101,22 @@ def extract_tables(text: str) -> list[dict]:
     return [t for t in tables if t["rows"]]
 
 
+def _expand_rle(tokens: list[str]) -> list[float | None]:
+    """Expand a setDSeries value stream, where 'v @ N' run-length-encodes a
+    value that holds for N timesteps (the count includes the occurrence
+    already emitted, so '@ N' appends N-1 repeats)."""
+    values: list[float | None] = []
+    i = 0
+    while i < len(tokens):
+        if tokens[i] == "@" and i + 1 < len(tokens) and values:
+            values.extend([values[-1]] * (int(tokens[i + 1]) - 1))
+            i += 2
+        else:
+            values.append(_num(tokens[i]))
+            i += 1
+    return values
+
+
 def extract_series(text: str) -> list[dict]:
     """Values for the curated series slots (from setDSeries data lines)."""
     series: list[dict] = []
@@ -119,7 +135,7 @@ def extract_series(text: str) -> list[dict]:
             m = re.match(r'"\$s" setDSeries \{([^}]*)\} \{([^}]*)\} \{([^}]*)\}'
                          r" (\d+) (\w+) -?\d+ (.*)$", ln)
             if m:
-                values = [_num(v) for v in m.group(6).split()]
+                values = _expand_rle(m.group(6).split())
                 if any(v is not None for v in values):
                     series.append({"object": obj, "slot": want,
                                    "unit": m.group(1), "start": m.group(2),
