@@ -68,8 +68,12 @@ then update the plugin itself:
 /plugin update riverware-ai-tools
 ```
 
-Restart Claude Code for the new version to take effect. To check which
-version you have, run `/plugin` and look at the installed plugin list, or run
+Updates never take effect mid-session on their own: plugins are loaded once
+at session start, so after updating run `/reload-plugins` (or restart Claude
+Code) to pick up the new version. The only exception is skill files, which
+Claude Code reloads automatically — but this plugin also ships agents, hooks,
+and an MCP server, and those always need the reload. To check which version
+you have, run `/plugin` and look at the installed plugin list, or run
 `claude plugin list` from a terminal.
 
 **Option B — clone the entire repository**:
