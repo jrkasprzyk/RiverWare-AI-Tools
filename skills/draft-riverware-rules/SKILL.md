@@ -1,6 +1,6 @@
 ---
 name: draft-riverware-rules
-description: Draft a RiverWare RPL policy rule from a plain-language operating-policy request — grounded in the target model's actual objects, slots, and existing ruleset style — and state where it belongs in the agenda. Use when asked to write, draft, add, or modify a RiverWare rule, RPL logic, or operating policy for a model.
+description: Draft a RiverWare RPL policy rule from a plain-language operating-policy request — grounded in the target model's actual objects, slots, and existing ruleset style — and state where it belongs in the agenda. Use when asked to write, draft, add, or modify a RiverWare rule, RPL logic, or operating policy for a model. Can also apply the draft directly to the .mdl file, but only when the user explicitly asks for that.
 ---
 
 # Draft a RiverWare rule
@@ -67,6 +67,20 @@ If the rules are embedded in the `.mdl` (both example models here), the digest
 lists the RPL set names; read the specific rule bodies with a targeted grep or
 narrow line-range read of the `.mdl` — never the whole file.
 
+Grep recipes that work on embedded RPL (every line in an RPL section ends
+with a `\` continuation, so anchors behave oddly — prefer unanchored
+patterns):
+
+- Locate the sets and their groups: grep for `NAME "|POLICY_GROUP` with line
+  numbers, then Read the line range of the set you need.
+- Locate individual rules inside a set: grep for `RULE ` (unanchored;
+  `^RULE` misses).
+
+Beware long lines: some `.mdl` regions (run diagnostics such as
+`lastDispatchPriority`, `successfulRulesVer2`) pack a whole run into single
+enormous lines — a ten-line Read there can blow the token limit. Fall back to
+`sed -n 'START,ENDp' file | cut -c1-400` to skim those regions.
+
 ## Step 2 — draft the rule
 
 Write the rule in the model's own style, then present it as a fenced code
@@ -113,11 +127,69 @@ End every draft with words to this effect:
   the model's style — it almost always is.
 - **One rule, one job.** If the request bundles several behaviors, draft
   separate rules and explain the firing-order relationship between them.
+- **Keep companion slots consistent.** Before capping or overriding a slot
+  another rule sets, check whether that rule mirrors the same quantity into a
+  second slot (e.g. an irrigation rule that sets both `Res.Release` and
+  `Farms.Incoming Available Water`). A new rule that changes one but not the
+  other leaves the model internally inconsistent — deliveries credited for
+  water never released. Update both together, mirroring the existing rule's
+  precedent, and say so in the assumptions.
 - **Explaining an existing rule** is a supporting move — use it to ground an
   edit ("here is what `Cedar End of Month Guide Curve` currently does, and
   here is the modified draft") — but the deliverable of this skill is the
   draft, not the explanation. For pure model documentation, use the
   explain-riverware-model skill instead.
+
+## Applying the draft to the model file (advanced, opt-in)
+
+The default deliverable of this skill is a **draft** — a fenced code block the
+modeler pastes into the RPL editor themselves. Do not edit the `.mdl`. The
+exception is when the user explicitly asks for the rule to be written into the
+model file ("add it to the model file", "don't just draft", "apply it"). A
+placement suggestion or an ambiguous "add a rule to the model" is a request
+for a draft, not an edit.
+
+When the user has explicitly asked, follow this sequence:
+
+1. **Back up first.** Copy the `.mdl` to a clearly named sibling (e.g.
+   `model_pre-<change>-backup.mdl`) before touching it, and tell the user
+   where the backup is.
+2. **Generate a fresh UUID for every new item.** Each `RULE`, `FUNCTION`,
+   slot, and group in a `.mdl` carries a UUID (introduced in RiverWare 7.5;
+   the RPL comparison and copy-property tools match items by UUID, not name).
+   Random version-4 UUIDs are correct — `python -c "import uuid;
+   print(uuid.uuid4())"` — one per new item, never reused from an existing
+   item.
+3. **Match the file's serialization exactly.**
+   - RPL items end with `UUID "{...}";;` and every line in an RPL section
+     ends with a `\` continuation — including blank lines.
+   - A new ScalarSlot on an object is a block of the form:
+
+     ```tcl
+     "$o" {ScalarSlot} {Slot Name}
+     set s "$o.Slot Name"
+     "$s" order N
+     "$s" UUID {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
+     "$s" units 1 {%f} 2
+     "$s" value 2165 {m}
+     ```
+
+     inserted among the object's other slot blocks (before the object's
+     `hideSlots` line), copying `units`/format arguments from a sibling slot
+     of the same unit type.
+   - Insert new rules at the position in the group that encodes the intended
+     agenda priority, and new functions inside the appropriate
+     `UTILITY_GROUP`.
+4. **Leave run diagnostics alone.** Lines like `rulesInformation` and
+   `successfulRulesVer2` are last-run bookkeeping; they go stale when rules
+   are added and RiverWare rebuilds them on the next run. Do not try to
+   renumber them.
+5. **Smoke-test by re-running the digest** (`explain.py`) on the edited file
+   and confirming the new slot/rule appears. This proves the file still
+   parses for the digest tool — it does not validate the RPL.
+6. **The Step 3 caveat still applies**, strengthened: the file was edited
+   outside RiverWare, so the user must load the model in RiverWare to
+   validate it, and can revert via the backup if the load fails.
 
 ## RPL syntax reference (worked example)
 

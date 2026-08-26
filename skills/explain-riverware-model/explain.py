@@ -312,6 +312,26 @@ def render_mdl(d: dict) -> str:
         L.append("\n## Embedded RPL sets")
         for n, t in d["rpl_sets"]:
             L.append(f"- {n} ({t})")
+    for rs in d.get("embedded_rpl", []):
+        if not rs["groups"]:
+            continue
+        agenda = rs["agenda"] or "?"
+        note = ""
+        if agenda == "ASCENDING":
+            note = "  (bottom rule fires first; a rule listed higher fires later and overrides)"
+        L.append(f"\n## RPL set `{rs['name']}`  --  agenda {agenda}{note}")
+        prio = 0
+        for g in rs["groups"]:
+            inactive = "" if g.get("active", True) else "  [INACTIVE]"
+            if g["kind"] == "UTILITY_GROUP":
+                fns = ", ".join(it["name"] for it in g["items"])
+                L.append(f"  UTILITY_GROUP `{g['name']}`{inactive}: {fns}")
+                continue
+            L.append(f"  POLICY_GROUP `{g['name']}`{inactive}")
+            for it in g["items"]:
+                prio += 1
+                flag = "" if it.get("active", True) else "  [INACTIVE]"
+                L.append(f"    {prio}. {it['name']}{flag}")
     L.append("\n## Objects")
     for o in d["objects"]:
         L.append(f"\n### {o['name']}  --  {o['type']}")
