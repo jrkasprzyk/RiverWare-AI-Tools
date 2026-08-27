@@ -105,6 +105,23 @@ Copilot to follow a skill, e.g.:
 **Other AI tools:** any agent that can read files and run Python can use
 these skills — point it at [AGENTS.md](AGENTS.md).
 
+## Custom GPTs
+
+Each `SKILL.md` file is plain markdown: a self-contained description of a
+RiverWare task, the vocabulary involved, and the steps and guardrails for
+doing it well. That text can be reused as the system prompt or knowledge
+file of a custom GPT — for instance, pasting
+`skills/explain-riverware-model/SKILL.md` into a custom GPT's instructions
+and then uploading a `.mdl` file to the conversation. Skills that depend
+mostly on reading and writing text (explaining models, drafting rules,
+cleaning up reports and comments) transfer best; skills that need to run
+scripts or fetch web pages (the dashboard visualizer, the help skill's
+fetch step) need the environment's own code-execution or browsing
+features, or a human to run those steps.
+
+This use has not been formally tested — if you try it, we would welcome
+feedback or contributed adaptations (see [Contributing](#contributing)).
+
 # Contents
 
 ## Skills
