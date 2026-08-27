@@ -173,6 +173,9 @@ with these tools.
 
 # Upcoming Work
 
+For where the integration can go next — and why it works at all — see
+[docs/ai-riverware-integration.md](docs/ai-riverware-integration.md).
+
 - [ ] Verified GitHub Copilot walkthrough
 - [ ] Verify use within custom GPTs
 - [ ] Editing example model descriptions and fine-tuning skills
