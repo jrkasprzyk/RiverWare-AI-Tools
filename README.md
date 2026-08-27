@@ -3,10 +3,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Status](https://img.shields.io/badge/status-early%20development-orange)
 
-**A exploratory demonstration of how AI tools can interface with
+**An exploratory demonstration of how AI tools can interface with
 [RiverWare](https://riverware.org).**
 
-This is an experimental repository created by Joseph Kasprzyk, to demonstrate how tools like Claude Code can aid in RiverWare modeling workflows. This is not included directly in any CADSWES software and is intended for demonstration purposes.
+This experimental repository shows how tools like Claude Code can aid in RiverWare modeling workflows. It is an exploratory project led by Prof. Joseph Kasprzyk at CADSWES. The tools are not an official part of any CADSWES software.
 
 Demos include:
 
@@ -16,19 +16,19 @@ Demos include:
   structure and key time series.
 - **Drafting policy rules** — turning a plain-language operating-policy
   request into RPL rule logic.
-- **Annotating models** — proposing descriptions for objects, slots, rules
-  and functions, and comments on RPL expressions, for the modeler to review
+- **Annotating models** — proposing descriptions for objects, slots, rules,
+  functions, and RPL expressions, for the modeler to review
   before they are written into the `.mdl` file.
 - **Live model control** — a prototype model context protocol
   ([MCP](https://modelcontextprotocol.io)) server that lets an AI agent set
   inputs, run RiverWare in batch mode, and read results back
   *(in development)*.
 
-Two example models are included here to demonstrate how the tools can be used, but the goal was to create tools for any RiverWare application.
+Two example models are included, but the goal was to create tools for any RiverWare application.
 
 # Quick start
 
-Instructions are included for [Claude Code](https://claude.com/claude-code) and [GitHub Copilot](https://github.com/copilot); other AI frameworks could also benefit from some of the tools in the repo, but they have not been tested.
+Instructions are included for Claude Code and GitHub Copilot.
 
 ## Claude Code
 
@@ -40,7 +40,7 @@ draft outputs. Two ways to get the skills:
 
 **Option A — install as a plugin** (works from any directory):
 
-The tools are available as a Claude Code plugin. This is a good option if you are already a user of RiverWare and Claude Code. This is the quickest option, and it is best if you already have a RiverWare project you'd like to explore with the tools.
+The tools are available as a Claude Code plugin. This is the quickest option, and the best one if you already have a RiverWare project you'd like to explore.
 
 First, add the marketplace:
 
@@ -70,15 +70,13 @@ then update the plugin itself:
 
 Updates never take effect mid-session on their own: plugins are loaded once
 at session start, so after updating run `/reload-plugins` (or restart Claude
-Code) to pick up the new version. The only exception is skill files, which
-Claude Code reloads automatically — but this plugin also ships agents, hooks,
-and an MCP server, and those always need the reload. To check which version
+Code) to pick up the new version. To check which version
 you have, run `/plugin` and look at the installed plugin list, or run
 `claude plugin list` from a terminal.
 
 **Option B — clone the entire repository**:
 
-Cloning the repository allows you to get access to the example RiverWare models and data. You can also propose PRs and contribute the project if you'd like. To clone:
+Cloning gives you the example RiverWare models and data, and lets you propose PRs and contribute to the project:
 
 ```bash
 git clone https://github.com/jrkasprzyk/RiverWare-AI-Tools.git
@@ -86,9 +84,7 @@ cd RiverWare-AI-Tools
 claude
 ```
 
-**Using the skills**:
-
-Try:
+**Using the skills** — try:
 
 > Explain the model in examples/ArborBasin/ArborBasin.mdl
 
@@ -114,9 +110,8 @@ file of a custom GPT — for instance, pasting
 `skills/explain-riverware-model/SKILL.md` into a custom GPT's instructions
 and then uploading a `.mdl` file to the conversation. Skills that depend
 mostly on reading and writing text (explaining models, drafting rules,
-cleaning up reports and comments) transfer best; skills that need to run
-scripts or fetch web pages (the dashboard visualizer, the help skill's
-fetch step) need the environment's own code-execution or browsing
+cleaning up reports and comments) transfer best. On the other hand, skills that need to run
+scripts or fetch web pages need the environment's own code-execution or browsing
 features, or a human to run those steps.
 
 This use has not been formally tested — if you try it, we would welcome
@@ -126,15 +121,15 @@ feedback or contributed adaptations (see [Contributing](#contributing)).
 
 ## Skills
 
-| Skill | What it does | Status |
-|-------|--------------|--------|
-| [explain-riverware-model](skills/explain-riverware-model/SKILL.md) | Parse a `.mdl`/`.rls` file and write a narrative explanation of the model | Available |
-| [visualize-riverware-model](skills/visualize-riverware-model/SKILL.md) | Render model structure and key series as a self-contained HTML dashboard | Available |
-| [draft-riverware-rules](skills/draft-riverware-rules/SKILL.md) | Draft a pasteable RPL rule from a plain-language policy request | Available |
-| [annotate-riverware-model](skills/annotate-riverware-model/SKILL.md) | Propose descriptions and RPL comments for a model, then apply the approved set to the `.mdl` | Available |
-| [riverware-help](skills/riverware-help/SKILL.md) | Interactive RiverWare help — answers grounded in the CADSWES CurrentVersion online help, with cited pages and model-aware context | Available |
-| [comment-cleanup](skills/comment-cleanup/SKILL.md) | Strip changelog-style and repeated comments from AI-written code, document every tuning parameter with its range, default and units, and write the result in Simplified Technical English | Available |
-| [report-cleanup](skills/report-cleanup/SKILL.md) | Rewrite a rambling bug report or issue into Summary/Repro/Hypothesis/Asks, using RiverWare vocabulary to tell an observed symptom from the writer's own guess | Available |
+| Skill | What it does |
+|-------|--------------|
+| [explain-riverware-model](skills/explain-riverware-model/SKILL.md) | Parse a `.mdl`/`.rls` file and write a narrative explanation of the model |
+| [visualize-riverware-model](skills/visualize-riverware-model/SKILL.md) | Render model structure and key series as a self-contained HTML dashboard |
+| [draft-riverware-rules](skills/draft-riverware-rules/SKILL.md) | Draft a pasteable RPL rule from a plain-language policy request |
+| [annotate-riverware-model](skills/annotate-riverware-model/SKILL.md) | Propose descriptions and RPL comments for a model, then apply the approved set to the `.mdl` |
+| [riverware-help](skills/riverware-help/SKILL.md) | Interactive RiverWare help — answers grounded in the CADSWES CurrentVersion online help, with cited pages and model-aware context |
+| [comment-cleanup](skills/comment-cleanup/SKILL.md) | Strip changelog-style and repeated comments from AI-written code, document every tuning parameter with its range, default and units, and write the result in Simplified Technical English |
+| [report-cleanup](skills/report-cleanup/SKILL.md) | Rewrite a rambling bug report or issue into Summary/Repro/Hypothesis/Asks, using RiverWare vocabulary to tell an observed symptom from the writer's own guess |
 
 ## Examples
 
@@ -179,6 +174,7 @@ with these tools.
 # Upcoming Work
 
 - [ ] Verified GitHub Copilot walkthrough
+- [ ] Verify use within custom GPTs
 - [ ] Editing example model descriptions and fine-tuning skills
 - [ ] Verify the annotated example models load cleanly in RiverWare
 - [ ] Widen `COMMENTED_BY` targeting beyond numeric literals, and encode
