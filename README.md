@@ -14,6 +14,8 @@ Demos include:
   files and write plain-language narrative explanations of a model.
 - **Visualizing models** — self-contained HTML dashboards of model
   structure and key time series.
+- **Presenting models** — PowerPoint decks that explain a model to a
+  stakeholder meeting: schematic, operating policy, and results.
 - **Drafting policy rules** — turning a plain-language operating-policy
   request into RPL rule logic.
 - **Annotating models** — proposing descriptions for objects, slots, rules,
@@ -125,17 +127,30 @@ feedback or contributed adaptations (see [Contributing](#contributing)).
 |-------|--------------|
 | [explain-riverware-model](skills/explain-riverware-model/SKILL.md) | Parse a `.mdl`/`.rls` file and write a narrative explanation of the model |
 | [visualize-riverware-model](skills/visualize-riverware-model/SKILL.md) | Render model structure and key series as a self-contained HTML dashboard |
+| [present-riverware-model](skills/present-riverware-model/SKILL.md) | Build a PowerPoint deck that explains a model — schematic, policy narrative, results — from a reviewable slide spec (needs `python-pptx`) |
 | [draft-riverware-rules](skills/draft-riverware-rules/SKILL.md) | Draft a pasteable RPL rule from a plain-language policy request |
 | [annotate-riverware-model](skills/annotate-riverware-model/SKILL.md) | Propose descriptions and RPL comments for a model, then apply the approved set to the `.mdl` |
 | [riverware-help](skills/riverware-help/SKILL.md) | Interactive RiverWare help — answers grounded in the CADSWES CurrentVersion online help, with cited pages and model-aware context |
 | [comment-cleanup](skills/comment-cleanup/SKILL.md) | Strip changelog-style and repeated comments from AI-written code, document every tuning parameter with its range, default and units, and write the result in Simplified Technical English |
 | [report-cleanup](skills/report-cleanup/SKILL.md) | Rewrite a rambling bug report or issue into Summary/Repro/Hypothesis/Asks, using RiverWare vocabulary to tell an observed symptom from the writer's own guess |
 
+## Prerequisites
+
+The skills run on **Python 3.10+** and the standard library alone, with one
+exception: `present-riverware-model` writes PowerPoint files and needs
+
+```bash
+pip install "python-pptx>=0.6.21"
+```
+
+Developed and tested against python-pptx 1.0.2. Every other skill runs on the
+standard library alone.
+
 ## Examples
 
 | Model | Description | Outputs |
 |-------|-------------|---------|
-| [ArborBasin](examples/ArborBasin/) | The CADSWES RiverWare training model | [Narrative](examples/ArborBasin/ArborBasin_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html) · [Rule case study](examples/ArborBasin/ArborBasin_rule_case_study.md) · [Annotation review](examples/ArborBasin/ArborBasin_annotations.md) |
+| [ArborBasin](examples/ArborBasin/) | The CADSWES RiverWare training model | [Narrative](examples/ArborBasin/ArborBasin_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html) · [Slide deck](examples/ArborBasin/ArborBasin_deck.pptx) · [Rule case study](examples/ArborBasin/ArborBasin_rule_case_study.md) · [Annotation review](examples/ArborBasin/ArborBasin_annotations.md) |
 | [TwoResOps](examples/TwoResOps/) | Saratoga, a two-reservoir operations testbed | [Narrative](examples/TwoResOps/saratoga_v2.4_explained.md) · [Live dashboard](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/TwoResOps/saratoga_v2.4_dashboard.html) · [Rule case study](examples/TwoResOps/saratoga_v2.4_rule_case_study.md) · [Annotation review](examples/TwoResOps/saratoga_v2.4_annotations.md) |
 
 Worked sessions in [examples/sessions/](examples/sessions/) show the skills

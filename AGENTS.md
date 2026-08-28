@@ -8,6 +8,7 @@ Entry point for any AI agent working in this repository.
 skills/                      One folder per skill: SKILL.md + helper scripts
   explain-riverware-model/   Narrative explanation of .mdl/.rls files
   visualize-riverware-model/ Self-contained interactive HTML dashboard
+  present-riverware-model/   PowerPoint deck from a reviewable slide spec
   draft-riverware-rules/     Draft a pasteable RPL policy rule
   annotate-riverware-model/  Propose + apply model descriptions and comments
   comment-cleanup/           Comment hygiene for source code (language-agnostic)
@@ -49,6 +50,10 @@ Each skill is self-documenting — read its `SKILL.md` and follow it:
   narrative explanation of a model and its ruleset.
 - `skills/visualize-riverware-model/SKILL.md` — render a model as a
   self-contained HTML dashboard (schematic, lookup tables, key series).
+- `skills/present-riverware-model/SKILL.md` — build a PowerPoint deck that
+  explains a model. You write a deck-spec JSON — which slides, in what order,
+  saying what — and `build_pptx.py` renders it. The spec is the review
+  artifact; the renderer makes no editorial decisions. Needs `python-pptx`.
 - `skills/draft-riverware-rules/SKILL.md` — draft a pasteable RPL rule from
   a plain-language policy request, and say where it belongs in the agenda.
 - `skills/annotate-riverware-model/SKILL.md` — propose descriptions and RPL
@@ -71,7 +76,15 @@ Each skill is self-documenting — read its `SKILL.md` and follow it:
 
 Skills follow a common pattern: a Python parser (3.10+, stdlib) extracts a
 digest; the SKILL.md tells you how to turn the digest into the deliverable;
-a worked example in `examples/` shows the target shape and depth.
+a worked example in `examples/` shows the target shape and depth. The one
+external dependency in the repository is `python-pptx`, used by
+`present-riverware-model` alone (`pip install python-pptx`).
+
+Extraction is shared: `skills/visualize-riverware-model/digest_to_json.py`
+exposes `build_digest(path, include_policy=False)`, `layout_nodes()` and
+`policy_from_rls()`, which the dashboard and the deck both call. The digest
+gains the RPL policy tree only when asked, because the dashboard embeds it
+verbatim and the committed dashboards must regenerate unchanged.
 
 ## Conventions
 
