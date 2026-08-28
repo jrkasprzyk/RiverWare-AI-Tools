@@ -1,8 +1,10 @@
-# AI ↔ RiverWare integration
+# ChatGPT (custom GPT) ↔ RiverWare integration
 
-This repository demonstrates integration between AI coding agents and
-RiverWare. This document briefly explains what an agent can already do
-with the tools here, and the directions that look most promising next. 
+This repository provides the instructions and files to create a custom
+GPT (https://chatgpt.com/gpts) that integrates with a local installation
+of RiverWare (https://www.riverware.org/). Please note that custom GPTs are
+not available with personal chatGPT accounts;  Business, Enterprise, or Edu
+workspace accounts with the correct workspace permissions are required.
 
 ## What works today
 
@@ -42,21 +44,6 @@ agenda-placement reasoning
 Note: a drafted rule is unvalidated until RiverWare
 loads and runs it.
 
-### 3. Live batch-mode control
-
-RiverWare's batch mode (RCL scripts) plus DMIs allow workflows where automated tools can interface directly with the model. 
-
-The **[riverware-mcp prototype](../prototypes/riverware-mcp/)**
-wraps that surface in model context protocol (MCP) tools (`list_objects`, `list_slots`, `set_slots`,
-`run_model`, `read_slots`) so any MCP-capable agent can run policy
-experiments against a licensed local RiverWare install. 
-
-An initial verification was completed using  RiverWare
-9.7: a four-tool-call loop measured the transbasin trade-off in the Arbor
-Basin model ([transcript](../prototypes/riverware-mcp/demo_transcript.md)).
-
-MCP servers like this can enable optimization, sensitivity study, calibration, and what-if conversations. A similar DMI structure is used in **Borg-RiverWare** to facilitate multi-objective optimization.
-
 ### 4. Analyzing output data
 
 RiverWare's exports (DMI data files, RDF, CSV) are plain text an agent can
@@ -64,32 +51,36 @@ parse, plot, and narrate with ordinary data tooling. The dashboard skill's
 time-series panels read results stored in the `.mdl` itself; the same
 approach extends to any export a run produces.
 
-## Prototype directions
+## Use instructions
 
-Future directions for the AI-RiverWare integration are discussed briefly below.
+This repository contains the instructions and knowledge files to create
+a custom GPT that is skilled at working with RiverWare model file and rulesets.
+To create the custom GPT, follow the below steps.
 
-1. **Natural-language Q&A over a loaded model.** The parsers answer
-   structural questions ("what fires after the flood-control rule?")
-   without running anything. A conversational layer over the digest — the
-   explain skill made interactive — is mostly prompt engineering on what
-   already exists.
-2. **AI-assisted calibration.** The MCP loop already sets inputs and reads
-   outputs; calibration is that loop plus a target dataset and a search
-   strategy the agent can reason about between runs (adjust, run, compare
-   residuals, explain what it tried).
-3. **Automated run-report narration.** After each run, generate a
-   plain-language report: what the policy did, which rules fired unusually
-   often, where shortages landed. The explain skill's narrative discipline
-   applied to results instead of structure.
-4. **Deeper RiverWare-native hooks.** Everything above treats RiverWare as
-   a black box at the file/batch boundary. The natural next step for the
-   platform itself would be a first-class scripting or remote procedure call (RPC) surface — the
-   ability to query slots and invoke runs in-process, which would replace
-   file-based DMI staging with direct calls and make the MCP server's tools
-   near-instant.
+1. **Open a new GPT.** Navigate to https://chatgpt.com/gpts and select 'Create'
+   in the upper right corner. Provide a name (eg 'RiverWare 9.7 Helper Bot')
+   and description (eg 'a GPT agent with knowledge of RiverWare documentation
+   that can write documentation, draft RPL, plot slots, and other tasks'.)
+2. **Copy/paste the instructions from instructions.txt** into the 'instructions'
+   area of the GPT. 
+3. **Upload all files in the knowledge folder to the GPT knowledge** INSTRUCTIONS to come
+4. **Create conversation starters.** We suggest using the following conversation
+   starters, but feel free to add or substract.
+   - (to come)
+   - (to come)
+   - (to come)
+4. **Enable Code Interpreter & Data Analysis.** In the capabilities area, check
+   Enable Code Interpreter & Data Analysis.
+5. **Create GPT.** Select 'Create' in the top right corner.
+6. **Share GPT (optional)** Select 'Share' in the top right corner and enter the
+   email addresses you want to share with. For others to access the GPT, the email
+   must be associated with an account that has access to GPTs (free accounts do
+   not). 
+   
 
 ## Considerations
 
 - **Licensing.** RiverWare is a licensed desktop application, and a license is required to run RiverWare with these tools.
 - **Validation.** AI-drafted RPL and AI-run experiments are drafts. RiverWare's load-time checks and modelers' are still needed to ensure accuracy and quality.
 - **Format drift.** The parsers here are verified against RiverWare 9.4–9.7 files. New format versions may need parser updates.
+
