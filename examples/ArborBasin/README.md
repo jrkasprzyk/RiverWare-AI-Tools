@@ -16,6 +16,8 @@ embedded RPL ruleset.
 | `ArborBasin.mdl` | The RiverWare model (RiverWare 9.4 format, ~1.7 MB Tcl text) |
 | `ArborBasin_explained.md` | Narrative explanation produced with the explain skill, human-polished |
 | `ArborBasin_dashboard.html` | Self-contained interactive dashboard produced with the visualize skill ([live version](https://jrkasprzyk.github.io/RiverWare-AI-Tools/examples/ArborBasin/ArborBasin_dashboard.html)) |
+| `ArborBasin_deck.pptx` | 14-slide PowerPoint briefing produced with the present skill |
+| `ArborBasin_deck.json` | The deck spec that produced it — the reviewable artifact |
 | `ArborBasin_rule_case_study.md` | Request → rule walkthrough produced with the draft-rules skill |
 | `ArborBasin_annotations.md` | Annotation proposals, numbered for review, produced with the annotate skill |
 | `ArborBasin_annotations.json` | The same proposals in machine form — the input `annotate.py` consumed |
@@ -57,3 +59,19 @@ python skills/explain-riverware-model/explain.py examples/ArborBasin/ArborBasin.
 Do not open the `.mdl` in a text editor expecting to read it — it is a
 generated Tcl script of tens of thousands of lines. The parser digest is the
 readable view.
+
+The deck regenerates from its own spec, byte for byte, because the date is
+pinned in the spec:
+
+```bash
+pip install python-pptx
+python skills/present-riverware-model/build_pptx.py examples/ArborBasin/ArborBasin.mdl \
+    --spec examples/ArborBasin/ArborBasin_deck.json \
+    -o examples/ArborBasin/ArborBasin_deck.pptx
+```
+
+**Not yet opened in PowerPoint.** The package structure and slide geometry are
+checked by `tests/test_pptx.py` on every build, but only PowerPoint validates a
+`.pptx`. See section 8 of
+[`reference.md`](../../skills/present-riverware-model/reference.md) for the
+compatibility matrix and what is still to be confirmed.

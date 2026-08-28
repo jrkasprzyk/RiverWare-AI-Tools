@@ -67,6 +67,13 @@ instead, which is useful when you want to inspect what the dashboard will show:
 If a model stores no run results, the `series` list is empty and the dashboard
 simply omits the time-series section — that is expected, not an error.
 
+`--policy` adds the RPL policy tree and the ruleset paths the model records.
+The dashboard never uses it — that flag is for callers of the digest, such as
+the present-riverware-model skill, which imports `build_digest`,
+`layout_nodes` and `policy_from_rls` from this script rather than parsing a
+`.mdl` of its own. The dashboard payload is deliberately unchanged by any of
+that.
+
 ## Step 2 — review before delivering
 
 Open the generated file in a browser and check:

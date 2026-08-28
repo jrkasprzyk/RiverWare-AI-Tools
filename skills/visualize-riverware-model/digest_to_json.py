@@ -7,11 +7,18 @@ key lookup tables, and the curated result time series.
 
 Usage:
     python digest_to_json.py model.mdl                 # JSON to stdout
+    python digest_to_json.py model.mdl --policy        # ... with the RPL policy tree
     python digest_to_json.py model.mdl --html          # write <model>_dashboard.html
     python digest_to_json.py model.mdl --html -o out.html
 
 The --html mode injects the JSON into template.html (next to this script) and
 writes a fully self-contained dashboard (inline CSS/JS, no network access).
+
+This module is also the shared extraction layer for the
+present-riverware-model skill, which imports `build_digest`, `layout_nodes`
+and `policy_from_rls` instead of touching a `.mdl` itself. The dashboard
+payload is fixed: `build_digest` adds the policy tree only when asked, so the
+committed dashboards stay byte-identical.
 """
 from __future__ import annotations
 
@@ -23,7 +30,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "explain-riverware-model"))
-from explain import parse_mdl  # noqa: E402
+from explain import parse_mdl, parse_rls  # noqa: E402
 
 # Curated result series shown as time-series plots (owner decision: structure + key series).
 KEY_SERIES_SLOTS = ["Pool Elevation", "Outflow", "Storage"]
@@ -39,6 +46,16 @@ TABLE_WHITELIST = [
 # Slot-name hints marking a link as water conveyance (vs. a data/head link).
 FLOW_HINTS = ("Inflow", "Outflow", "Flow", "Diversion", "Seepage", "Return",
               "Available", "Delivered", "Bypass", "Pumped")
+
+# Layered-layout geometry, in the SVG pixel units template.html draws with.
+# The slide renderer scales these to slide coordinates, so the dashboard and
+# the deck place the same model the same way.
+LAYOUT_COLW = 190     # column pitch, px (>= LAYOUT_NODEW; wider = longer edges)
+LAYOUT_ROWH = 58      # row pitch, px (>= LAYOUT_NODEH; wider = more vertical space)
+LAYOUT_PAD = 40       # margin around the drawing, px
+LAYOUT_NODEW = 150    # node box width, px
+LAYOUT_NODEH = 34     # node box height, px
+LAYOUT_PASSES = 30    # relaxation passes, 1-100; caps the cost of a cyclic network
 
 
 def _split_ref(ref: str) -> tuple[str, str]:
@@ -146,13 +163,131 @@ def extract_series(text: str) -> list[dict]:
     return series
 
 
-def build_digest(path: Path) -> dict:
+def object_edges(objects: list[dict], links: list[dict]) -> list[dict]:
+    """Object-level edges: self-links dropped, dangling ends dropped, deduplicated."""
+    names = {o["name"] for o in objects}
+    seen: set[tuple[str, str, str]] = set()
+    edges: list[dict] = []
+    for l in links:
+        if l["from"] == l["to"] or l["from"] not in names or l["to"] not in names:
+            continue
+        key = (l["from"], l["to"], l["kind"])
+        if key in seen:
+            continue
+        seen.add(key)
+        edges.append({"from": l["from"], "to": l["to"], "kind": l["kind"]})
+    return edges
+
+
+def layout_nodes(objects: list[dict], links: list[dict]) -> dict:
+    """Place objects on a left-to-right layered grid, upstream to downstream.
+
+    Depth is the longest path over water-conveyance edges only, found by
+    relaxation with a cycle cap -- a basin with a return-flow loop has no
+    topological order, and a capped relaxation degrades to a usable layout
+    instead of failing. Data/head edges do not move a node, so a tailwater
+    coupling cannot drag a reservoir out of its column.
+
+    Returns nodes with x/y in pixel units, the deduplicated edges, and the
+    bounding box the caller scales to its own canvas.
+    """
+    edges = object_edges(objects, links)
+    depth = {o["name"]: 0 for o in objects}
+    flow = [e for e in edges if e["kind"] == "flow"]
+    for _ in range(LAYOUT_PASSES):
+        changed = False
+        for e in flow:
+            d = depth[e["from"]] + 1
+            if d > depth[e["to"]] and d < len(depth):
+                depth[e["to"]] = d
+                changed = True
+        if not changed:
+            break
+    cols: dict[int, list[str]] = {}
+    for name in sorted(depth):
+        cols.setdefault(depth[name], []).append(name)
+    by_name = {o["name"]: o for o in objects}
+    nodes: list[dict] = []
+    max_rows = 0
+    for ci, d in enumerate(sorted(cols)):
+        max_rows = max(max_rows, len(cols[d]))
+        for ri, name in enumerate(cols[d]):
+            nodes.append({"name": name, "type": by_name[name]["type"],
+                          "column": ci, "row": ri,
+                          "x": LAYOUT_PAD + ci * LAYOUT_COLW,
+                          "y": LAYOUT_PAD + ri * LAYOUT_ROWH})
+    return {"nodes": nodes, "edges": edges,
+            "width": LAYOUT_PAD * 2 + len(cols) * LAYOUT_COLW,
+            "height": LAYOUT_PAD * 2 + max_rows * LAYOUT_ROWH,
+            "node_width": LAYOUT_NODEW, "node_height": LAYOUT_NODEH}
+
+
+def _policy_groups(groups: list[dict]) -> list[dict]:
+    """Normalize the parser's RPL tree: absent ACTIVE fields mean active."""
+    return [{"kind": g["kind"], "name": g["name"],
+             "active": g.get("active") is not False,
+             "description": g.get("description", ""),
+             "items": [{"kind": it["kind"], "name": it["name"],
+                        "active": it.get("active") is not False,
+                        "description": it.get("description", ""),
+                        "notes": it.get("notes", "")}
+                       for it in g["items"]]}
+            for g in groups]
+
+
+def extract_policy(mdl: dict) -> dict:
+    """The RPL sets serialized inside the .mdl, as agenda-ordered policy trees.
+
+    Rule bodies are left out on purpose: a deck states what a rule does, and
+    the wording for that comes from the spec, not from RPL source.
+    """
+    set_types = dict(mdl.get("rpl_sets", []))
+    sets = []
+    for rs in mdl.get("embedded_rpl", []):
+        if not rs["groups"]:
+            continue
+        sets.append({"name": rs["name"], "type": set_types.get(rs["name"], "?"),
+                     "agenda": rs["agenda"] or "?",
+                     "description": rs["description"],
+                     "groups": _policy_groups(rs["groups"])})
+    return {"sets": sets}
+
+
+def policy_from_rls(text: str) -> dict:
+    """The same policy shape from a standalone .rls the user supplied.
+
+    A model whose operating policy lives in an external ruleset has nothing to
+    extract from the .mdl; the modeler has to hand over the .rls (AGENTS.md:
+    the path recorded in the model is reported, never opened).
+    """
+    rls = parse_rls(text)
+    if not rls["groups"]:
+        return {"sets": []}
+    return {"sets": [{"name": rls["name"] or "(unnamed ruleset)",
+                      "type": "Rule Based Simulation",
+                      "agenda": rls["agenda"] or "?",
+                      "description": rls["description"],
+                      "groups": _policy_groups(rls["groups"])}]}
+
+
+def extract_ruleset_files(text: str) -> list[str]:
+    """Ruleset paths the .mdl records. Reported to the user, never opened."""
+    return sorted(set(re.findall(r'[^\s"{}<>\\]+\.rls', text)))
+
+
+def build_digest(path: Path, include_policy: bool = False) -> dict:
+    """Structure, topology, lookup tables and result series for one model.
+
+    include_policy adds the RPL policy tree and the ruleset paths the model
+    references. It is off by default because the dashboard embeds this digest
+    verbatim, and the committed dashboards must regenerate unchanged.
+    """
     text = path.read_text(encoding="utf-8", errors="replace")
     mdl = parse_mdl(text)
     counts: dict[str, int] = {}
     for o in mdl["objects"]:
         counts[o["type"]] = counts.get(o["type"], 0) + 1
-    return {
+    digest = {
         "model": {
             "file": path.name,
             "version": mdl["header"].get("version", "?"),
@@ -167,6 +302,10 @@ def build_digest(path: Path) -> dict:
         "tables": extract_tables(text),
         "series": extract_series(text),
     }
+    if include_policy:
+        digest["policy"] = extract_policy(mdl)
+        digest["policy"]["referenced_files"] = extract_ruleset_files(text)
+    return digest
 
 
 def main(argv: list[str]) -> int:
@@ -183,7 +322,8 @@ def main(argv: list[str]) -> int:
     if not p.exists() or p.suffix.lower() != ".mdl":
         print(f"error: {args[0]} is not an existing .mdl file", file=sys.stderr)
         return 2
-    digest = build_digest(p)
+    # The dashboard payload never carries the policy tree -- see build_digest.
+    digest = build_digest(p, include_policy=("--policy" in argv and not as_html))
     payload = json.dumps(digest, separators=(",", ":"), allow_nan=False)
     if not as_html:
         print(payload)

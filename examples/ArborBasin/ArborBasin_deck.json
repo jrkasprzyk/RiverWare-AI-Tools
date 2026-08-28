@@ -1,0 +1,219 @@
+{
+  "deck_title": "Arbor Basin: how the system is operated",
+  "date": "2026-08-28",
+  "template": null,
+  "slides": [
+    {
+      "type": "title",
+      "id": "cover",
+      "bullets": [
+        "Structure, operating policy, and one year of simulated results"
+      ],
+      "notes": "Counts and run horizon are read from the model header."
+    },
+    {
+      "type": "bullets",
+      "id": "agenda",
+      "title": "What this deck covers",
+      "bullets": [
+        "The physical system: two basins joined by one transbasin diversion",
+        "The operating policy: nine rule groups, west basin to east basin",
+        "The decision levers an external workflow can move",
+        "Simulated results for calendar year 2018"
+      ]
+    },
+    {
+      "type": "network",
+      "id": "system-west",
+      "title": "West basin: a five-reservoir cascade",
+      "refs": {
+        "objects": ["Aspen", "Aspen to Birch", "Birch", "Birch to Cedar",
+                    "Cedar", "Cedar to Dogwood", "Dogwood",
+                    "Dogwood Irrigation", "Reach for Diversion",
+                    "Eastern Irrigation", "Dogwood to Elm", "Elm",
+                    "Transbasin Diversion"]
+      },
+      "bullets": [
+        "Aspen through Elm, four of them power reservoirs. The Transbasin Diversion at Cedar is the only water leaving this basin."
+      ],
+      "notes": "Dashed edges are data and head links, not water: Aspen's tailwater is linked to Birch's pool elevation, and Dogwood's to Elm's. Drawn as a subset of the 41-object network; the whole model on one slide is not readable when projected."
+    },
+    {
+      "type": "network",
+      "id": "system-east",
+      "title": "East basin: Hickory and the irrigation complex",
+      "refs": {
+        "objects": ["Transbasin Diversion", "Gage Above Hickory", "Hickory",
+                    "Juniper Diversion", "Juniper Irrigation",
+                    "Interstate Flow Requirement", "Mulberry Seepage",
+                    "Hickory Diversion", "Linden Canal", "Linden Irrigation",
+                    "Mulberry Canal Power", "Mulberry Canal",
+                    "Mulberry Irrigation", "Linden Groundwater",
+                    "Mulberry Groundwater", "Mulberry Canal Return"]
+      },
+      "bullets": [
+        "The transbasin water arrives above Hickory, which supplies Juniper, the interstate minimum flow, and the Linden and Mulberry canals."
+      ],
+      "notes": "Aggregate sites are drawn as single nodes; their districts are separate objects in the model. The two groundwater objects exchange water laterally and are recharged by canal seepage and irrigation returns."
+    },
+    {
+      "type": "summary",
+      "id": "reservoirs",
+      "title": "The six reservoirs the policy operates",
+      "refs": {"types": ["LevelPowerReservoir", "StorageReservoir"]},
+      "bullets": [
+        "Every rule group below is named for one of these reservoirs."
+      ]
+    },
+    {
+      "type": "policy",
+      "id": "policy-west-upper",
+      "title": "West basin, upper cascade: operate, then protect",
+      "refs": {
+        "set": "Arbor Basin Rules (from MRM run)",
+        "groups": ["Aspen Rules", "Birch Rules"]
+      },
+      "annotations": {
+        "Aspen Rules": "Draws the pool toward the monthly guide curve, then overrides that if a limit is crossed.",
+        "Aspen Rules/Cause Sporadic Error": "A deliberate tripwire: aborts the run when Cedar's Diversion Min Elevation is out of range.",
+        "Aspen Rules/Aspen Operate to Guide Curve": "The base operation: release to move the pool toward the Elevation Guide Curve.",
+        "Aspen Rules/Aspen Outflow Min": "Floors the release at the minimum outflow.",
+        "Aspen Rules/Aspen Elevation Min": "Cuts the release when the pool would fall below its minimum.",
+        "Aspen Rules/Aspen Elevation Max": "Increases the release when the pool would exceed its maximum.",
+        "Birch Rules": "The same pattern one reservoir down, with an outflow target as the base operation.",
+        "Birch Rules/Birch Outflow Target": "The base operation: release to the target outflow.",
+        "Birch Rules/Birch Outflow Min": "Floors the release at the minimum outflow.",
+        "Birch Rules/Birch Elevation Min": "Cuts the release when the pool would fall below its minimum.",
+        "Birch Rules/Birch Elevation Max": "Increases the release when the pool would exceed its maximum."
+      },
+      "notes": "Agenda order is ASCENDING, so within a group the rule listed last fires first and the elevation limits, listed first, take final priority."
+    },
+    {
+      "type": "policy",
+      "id": "policy-hinge",
+      "title": "The hinge: what the west basin can spare",
+      "refs": {
+        "set": "Arbor Basin Rules (from MRM run)",
+        "groups": ["Transbasin Diversion", "Cedar Rules", "Dogwood Irrigation"]
+      },
+      "annotations": {
+        "Transbasin Diversion": "Decides how much water leaves the west basin for the east.",
+        "Transbasin Diversion/Cedar Available for Diversion": "Offers the storage above Cedar's Diversion Min Elevation, plus inflow, less the required minimum outflow.",
+        "Cedar Rules": "Operates the west basin's storage workhorse to its monthly guide curve.",
+        "Cedar Rules/Cedar End of Month Guide Curve": "Solves for guide-curve storage on the last day of the month, and walks toward it on other days.",
+        "Cedar Rules/Cedar Outflow Min": "Floors the release at the minimum outflow.",
+        "Cedar Rules/Cedar Elevation Min": "Applies the minimum from the Pool Elevation Limits table.",
+        "Cedar Rules/Cedar Elevation Max": "Applies the maximum from the Pool Elevation Limits table.",
+        "Dogwood Irrigation": "Computes west-basin irrigation availability the same way, gated by Dogwood's own floor.",
+        "Dogwood Irrigation/Dogwood Available for Diversion": "Offers the storage above Dogwood's Diversion Min Elevation to its irrigation diversion."
+      },
+      "notes": "Cedar.Diversion Min Elevation and Cedar.Pool Elevation Limits are scalar slots written before a run by the input DMIs."
+    },
+    {
+      "type": "policy",
+      "id": "policy-east",
+      "title": "East basin: senior rights come first",
+      "refs": {
+        "set": "Arbor Basin Rules (from MRM run)",
+        "groups": ["Hickory Rules"]
+      },
+      "annotations": {
+        "Hickory Rules": "The east basin's water-rights logic. The firing order is the policy.",
+        "Hickory Rules/Interstate Flow Requirement": "Reserves the interstate minimum first, by setting the Juniper Diversion's minimum bypass.",
+        "Hickory Rules/Hickory Pass Natural Flows for Juniper and Interstate": "Passes the natural flow arriving above the reservoir, up to what Juniper and the interstate minimum need.",
+        "Hickory Rules/Supplement Juniper from Hickory Storage": "Releases stored water for Juniper, but only while the pool is above its supplement threshold.",
+        "Hickory Rules/Reduce Hickory Diversion": "Cuts the canal supply to Linden and Mulberry in favour of Juniper's senior rights.",
+        "Hickory Rules/Hickory Elevation Min Reduce Diversion": "Cuts the diversion further when the pool is below its minimum.",
+        "Hickory Rules/Hickory Elevation Min": "Cuts the release when the pool would fall below its minimum.",
+        "Hickory Rules/Hickory Elevation Max": "Increases the release when the pool would exceed its maximum."
+      },
+      "notes": "Hickory.Pool Elevation Min to Supplement Irrigation is the scalar threshold in the supplement rule, and is DMI-written."
+    },
+    {
+      "type": "policy",
+      "id": "policy-lower",
+      "title": "Lower cascade: the same two safeguards",
+      "refs": {
+        "set": "Arbor Basin Rules (from MRM run)",
+        "groups": ["Dogwood Rules", "Elm Rules"]
+      },
+      "annotations": {
+        "Dogwood Rules": "The safeguard pattern only: floors and ceilings, no separate base operation.",
+        "Dogwood Rules/Dogwood Outflow Min": "Floors the release at the minimum outflow.",
+        "Dogwood Rules/Dogwood Elevation Min": "Cuts the release when the pool would fall below its minimum.",
+        "Dogwood Rules/Dogwood Elevation Max": "Increases the release when the pool would exceed its maximum.",
+        "Elm Rules": "The bottom reservoir of the cascade, with a pool elevation target and a flood release rule.",
+        "Elm Rules/Elm Pool Elevation Target": "The base operation: release toward the target pool elevation.",
+        "Elm Rules/Elm Required Spill": "Makes the flood release when one is required.",
+        "Elm Rules/Elm Outflow Min": "Floors the release at the minimum outflow.",
+        "Elm Rules/Elm Elevation Min": "Cuts the release when the pool would fall below its minimum.",
+        "Elm Rules/Elm Elevation Max": "Increases the release when the pool would exceed its maximum."
+      },
+      "notes": "Both groups call the three shared functions in the set's utility group: OutflowForMinOutflowRules, OutflowForMinElevationRules, OutflowForMaxElevationRules."
+    },
+    {
+      "type": "policy",
+      "id": "policy-postprocessing",
+      "title": "Post-processing: what the run reports",
+      "refs": {
+        "set": "Arbor Basin Rules (from MRM run)",
+        "groups": ["Post-processing"]
+      },
+      "annotations": {
+        "Post-processing": "Fires last, and writes the system-wide summary slots nothing else reads.",
+        "Post-processing/Interstate Flow Requirement Violation": "Records any shortfall below the interstate minimum flow.",
+        "Post-processing/System Energy": "Sums energy across the power objects into System Data.",
+        "Post-processing/System Spill": "Sums spill volume across the reservoirs.",
+        "Post-processing/System Depletion Shortage": "Sums depletion shortage across the water users.",
+        "Post-processing/Energy Cumulative": "Accumulates each power object's energy over the run."
+      },
+      "notes": "These write the System Data slots the output DMIs export after a run: Total Energy, the west- and east-basin irrigation totals, Total Spill Volume, Total Transbasin Diversion, and Total Depletion Shortage."
+    },
+    {
+      "type": "bullets",
+      "id": "levers",
+      "title": "The levers an external workflow moves",
+      "bullets": [
+        "Cedar.Diversion Min Elevation - the floor below which the transbasin diversion is cut off",
+        "Cedar.Pool Elevation Limits - the adjustable maximum and minimum operating elevations",
+        "Dogwood.Diversion Min Elevation - the floor for west-basin irrigation access",
+        "Hickory.Pool Elevation Min to Supplement Irrigation - how deeply east-basin storage is drawn for irrigation",
+        "Input DMIs write these before a run; output DMIs export the System Data totals after it."
+      ],
+      "notes": "All four are scalar slots on the objects named. The DMIs are listed in the model's DMI catalog: ArborInputDMI, ArborMRMInputs, From Borg-RiverWare, and their output counterparts."
+    },
+    {
+      "type": "series",
+      "id": "results-elevation",
+      "title": "Simulated pool elevations, 2018",
+      "refs": {
+        "series": ["Aspen.Pool Elevation", "Birch.Pool Elevation",
+                   "Cedar.Pool Elevation", "Hickory.Pool Elevation"]
+      },
+      "bullets": [
+        "One reservoir from each part of the story: the two power reservoirs at the top, Cedar at the hinge, and Hickory in the east."
+      ],
+      "notes": "All four are in metres, so the four traces share one value axis. The elevation ranges differ by more than 100 m, which is why the lower reservoirs look flat."
+    },
+    {
+      "type": "series",
+      "id": "results-transbasin",
+      "title": "What actually crossed the divide",
+      "refs": {
+        "series": ["Cedar.Outflow", "Transbasin Diversion.Outflow",
+                   "Hickory.Outflow"]
+      },
+      "bullets": [
+        "Cedar's release, the transbasin diversion it feeds, and what Hickory passed downstream."
+      ],
+      "notes": "All three are flows in cms. The transbasin series is the outflow of the Transbasin Diversion object, which enters the east basin above Hickory."
+    },
+    {
+      "type": "caveats",
+      "id": "caveats",
+      "bullets": [
+        "Arbor Basin is the CADSWES training model, not an operating model of a real basin."
+      ]
+    }
+  ]
+}
