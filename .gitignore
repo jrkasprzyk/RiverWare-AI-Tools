@@ -12,3 +12,7 @@ prototypes/riverware-mcp/config.json
 # A private folder is available for local development and testing, but should not be committed to the repository.
 .private/
 
+
+# R session history
+.Rhistory
+.RData
